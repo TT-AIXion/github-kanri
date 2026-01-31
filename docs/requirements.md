@@ -24,7 +24,8 @@
 
 - Repo: `~/Projects/repos/` 配下の Git リポジトリ
 - Skills: `~/Projects/skills/` 配下に管理される共通スキル群
-- Sync: スキルをクローン/更新し各 Repo に配布
+- Sync: 共有資産（skills 等）をクローン/更新し各 Repo に配布
+- Sync Targets: 同期対象のディレクトリ集合（JSON で可変）
 
 ## 主要ユースケース
 
@@ -41,13 +42,18 @@
 - Repo 一括操作: 指定コマンドの一括実行（例: fetch, pull, status）
 - Repo open: repo 名の部分一致で `code <path>` 起動（複数一致は候補一覧出力→`--pick <n>` で選択）
 
-### 2. Skills 管理
+### 2. Skills/Sync 管理
 
 - skills クローン: 設定されたリモートから `~/Projects/skills/` にクローン
 - skills 更新: `git fetch/pull` で更新
 - 配布先生成: `.codex/skills/`, `.claude/skills/` 等の既知ディレクトリを作成
-- 配布方式: 既定は「ミラー（上書き）」、必要なら `--safe` で差分のみ
+- 配布方式: 既定は `copy`（安全: 衝突時は fail）
+- `mirror`/`link` は明示指定で有効化
 - 監視モード: skills 更新検知で自動 sync（任意コマンド）
+- 共有資産 sync: templates/scripts/config/docs 等を JSON で指定して配布
+- sync 対象はデフォルト値 + JSON で上書き/追加/除外可能
+- 衝突時の挙動: 既定 `fail`（`--force` で上書き）
+- `include`/`exclude` は glob（`.gitignore` 互換を想定）
 
 ### 3. 安全制御（JSON 設定）
 
@@ -101,6 +107,13 @@ gkn skills watch
 gkn config show
 ```
 
+### 共通オプション（案）
+
+- `--force`: 衝突時上書き（既定は fail）
+- `--dry-run`: 実行せずに差分/対象のみ表示
+- `--only <pattern>`: 対象限定（glob）
+- `--exclude <pattern>`: 対象除外（glob）
+
 ## 設定（案）
 
 ```json
@@ -108,9 +121,40 @@ gkn config show
   "reposRoot": "~/Projects/repos",
   "skillsRoot": "~/Projects/skills",
   "skillTargets": [".codex/skills", ".claude/skills"],
+  "syncTargets": [
+    {
+      "name": "skills",
+      "src": "~/Projects/skills",
+      "dest": [".codex/skills", ".claude/skills"],
+      "include": ["**/*"],
+      "exclude": [".git/**"]
+    },
+    {
+      "name": "templates",
+      "src": "~/Projects/shared/templates",
+      "dest": ["./.github", "./docs"],
+      "include": ["**/*"],
+      "exclude": [".git/**"]
+    },
+    {
+      "name": "scripts",
+      "src": "~/Projects/shared/scripts",
+      "dest": ["./scripts"],
+      "include": ["**/*"],
+      "exclude": [".git/**"]
+    },
+    {
+      "name": "config",
+      "src": "~/Projects/shared/config",
+      "dest": ["./"],
+      "include": ["**/*"],
+      "exclude": [".git/**"]
+    }
+  ],
   "allowCommands": ["git status", "git fetch", "git pull"],
   "denyCommands": ["rm -rf", "git reset --hard"],
-  "syncMode": "mirror"
+  "syncMode": "copy",
+  "conflictPolicy": "fail"
 }
 ```
 
