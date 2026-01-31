@@ -99,15 +99,39 @@
 
 - コマンド名: `gkn`
 
-```
-gkn repo list
-gkn repo status
-gkn repo exec --cmd "git fetch --all"
-gkn skills clone
-gkn skills sync
-gkn skills watch
-gkn config show
-```
+### コマンド一覧（案）
+
+#### repo
+
+- `gkn repo list`
+- `gkn repo status`
+- `gkn repo open <pattern> --pick <n>`
+- `gkn repo path <pattern> --pick <n>`
+- `gkn repo recent --limit <n>`
+- `gkn repo info <pattern> --pick <n>`
+- `gkn repo graph <pattern> --pick <n> --limit <n>`
+- `gkn repo clone <url> [--name <repo>]`
+- `gkn repo exec --cmd "<command>" [--parallel <n>] [--timeout <sec>] [--require-clean]`
+
+#### skills / sync
+
+- `gkn skills clone`
+- `gkn skills sync [--target <name>]`
+- `gkn skills watch [--target <name>]`
+- `gkn skills diff [--target <name>]`
+- `gkn skills verify [--target <name>]`
+- `gkn skills status [--target <name>]`
+- `gkn skills link [--target <name>]`
+- `gkn skills pin --target <name> --ref <commit|tag>`
+- `gkn skills clean [--target <name>]`
+
+#### config / system
+
+- `gkn config show`
+- `gkn config init`
+- `gkn config validate`
+- `gkn doctor`
+- `gkn version`
 
 ### 共通オプション（案）
 
@@ -115,6 +139,7 @@ gkn config show
 - `--dry-run`: 実行せずに差分/対象のみ表示
 - `--only <pattern>`: 対象限定（glob）
 - `--exclude <pattern>`: 対象除外（glob）
+- `--json`: 機械可読出力
 
 ## 設定（案）
 
