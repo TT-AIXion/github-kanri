@@ -15,8 +15,9 @@
 
 ## 前提/パス規約
 
-- リポジトリ基準パス: `~/Projects/repos/`
-- スキル基準パス: `~/Projects/skills/`
+- プロジェクト基準パス: `~/Projects/`（設定で変更可）
+- リポジトリ基準パス: `<projectsRoot>/repos/`（個別上書き可）
+- スキル基準パス: `<projectsRoot>/skills/`（個別上書き可）
 - スキル配布先: `.codex/skills/`, `.claude/skills/`, ほか既知のスキルディレクトリ
 - 既存構成に合わせて設定で上書き可
 
@@ -58,6 +59,7 @@
 ### 3. 安全制御（JSON 設定）
 
 - 設定ファイル: JSON（例: `~/.config/github-kanri/config.json`）
+- 設定ファイルは 1 箇所のみ（単一ソース）
 - allow/deny ルール: コマンド単位・パス単位の許可/拒否
 - 危険操作: deny 時は非対話で即失敗（exit != 0）
 
@@ -118,6 +120,7 @@ gkn config show
 
 ```json
 {
+  "projectsRoot": "~/Projects",
   "reposRoot": "~/Projects/repos",
   "skillsRoot": "~/Projects/skills",
   "skillTargets": [".codex/skills", ".claude/skills"],
