@@ -100,8 +100,18 @@ func (a App) runRepoExec(ctx context.Context, args []string) int {
 	close(jobs)
 	wg.Wait()
 
+	hadError := false
+	for _, r := range results {
+		if r.Error != "" && !r.Skipped {
+			hadError = true
+			break
+		}
+	}
 	if a.Out.JSON {
 		a.Out.OK("repo exec", results)
+		if hadError {
+			return 1
+		}
 		return 0
 	}
 	for _, r := range results {
@@ -110,6 +120,7 @@ func (a App) runRepoExec(ctx context.Context, args []string) int {
 			continue
 		}
 		if r.Error != "" {
+			hadError = true
 			a.Out.Err(fmt.Sprintf("%s %s", r.Name, r.Error), nil)
 			continue
 		}
@@ -120,6 +131,9 @@ func (a App) runRepoExec(ctx context.Context, args []string) int {
 		if r.Stderr != "" {
 			a.Out.Raw(r.Stderr)
 		}
+	}
+	if hadError {
+		return 1
 	}
 	return 0
 }
