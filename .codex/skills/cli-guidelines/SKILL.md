@@ -3,269 +3,273 @@ name: cli-guidelines
 description: CLI 設計ガイドライン（cli-guidelines 原典の要約/参照用）。
 ---
 
-# Command Line Interface Guidelines
+# コマンドライン・インターフェース・ガイドライン
 
-An [open-source](https://github.com/cli-guidelines/cli-guidelines) guide to help you write better command-line programs, taking traditional UNIX principles and updating them for the modern day.
+伝統的な UNIX 原則を現代向けに更新し、より良いコマンドライン・プログラムを書くための [open-source](https://github.com/cli-guidelines/cli-guidelines) ガイド。
 
-## Authors {#authors}
+## 著者 {#authors}
 
 **Aanand Prasad** \
-Engineer at Squarespace, co-creator of Docker Compose. \
+Squarespace のエンジニア、Docker Compose 共同作者。 \
 [@aanandprasad](https://twitter.com/aanandprasad)
 
 **Ben Firshman** \
-Co-founder of [Replicate](https://replicate.com/), co-creator of Docker Compose. \
+[Replicate](https://replicate.com/) 共同創業者、Docker Compose 共同作者。 \
 [@bfirsh](https://twitter.com/bfirsh)
 
 **Carl Tashian** \
-Offroad Engineer at [Smallstep](https://smallstep.com/), first engineer at Zipcar, co-founder Trove. \
+[Smallstep](https://smallstep.com/) の Offroad Engineer、Zipcar 初期エンジニア、Trove 共同創業者。 \
 [tashian.com](https://tashian.com/) [@tashian](https://twitter.com/tashian)
 
 **Eva Parish** \
-Technical Writer at Squarespace, O'Reilly contributor. \
+Squarespace のテクニカルライター、O'Reilly 寄稿者。 \
 [evaparish.com](https://evaparish.com/) [@evpari](https://twitter.com/evpari)
 
-Design by [Mark Hurrell](https://mhurrell.co.uk/). Thanks to Andreas Jansson for early contributions, and Andrew Reitz, Ashley Williams, Brendan Falk, Chester Ramey, Dj Walker-Morgan, Jacob Maine, James Coglan, Michael Dwan, and Steve Klabnik for reviewing drafts.
+デザインは [Mark Hurrell](https://mhurrell.co.uk/)。初期貢献の Andreas Jansson、ドラフトレビューの Andrew Reitz、Ashley Williams、Brendan Falk、Chester Ramey、Dj Walker-Morgan、Jacob Maine、James Coglan、Michael Dwan、Steve Klabnik に感謝。
 
 <iframe class="github-button" src="https://ghbtns.com/github-btn.html?user=cli-guidelines&repo=cli-guidelines&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
 
-[Join us on Discord](https://discord.gg/EbAW5rUCkE) if you want to discuss the guide or CLI design.
+ガイドや CLI デザインを議論したいなら [Discord に参加](https://discord.gg/EbAW5rUCkE)。
 
-## Foreword {#foreword}
+## 序文 {#foreword}
 
-In the 1980s, if you wanted a personal computer to do something for you, you needed to know what to type when confronted with `C:\>` or `~$`.
-Help came in the form of thick, spiral-bound manuals.
-Error messages were opaque.
-There was no Stack Overflow to save you.
-But if you were lucky enough to have internet access, you could get help from Usenet—an early internet community filled with other people who were just as frustrated as you were.
-They could either help you solve your problem, or at least provide some moral support and camaraderie.
+1980年代、パーソナルコンピュータに何かをさせたいなら、`C:\>` や `~$` の前で何をタイプすべきか知っている必要があった。
+助けは分厚いスパイラル製本のマニュアル。
+エラーメッセージは不透明。
+Stack Overflow もなかった。
+だが運よくインターネットにアクセスできれば、Usenet という初期インターネットのコミュニティから助けを得られた。
+同じように苛立っている人々が集まる場所だ。
+彼らは問題解決を手伝うか、少なくとも精神的支援と連帯感をくれた。
 
-Forty years later, computers have become so much more accessible to everyone, often at the expense of low-level end user control.
-On many devices, there is no command-line access at all, in part because it goes against the corporate interests of walled gardens and app stores.
+40年後、コンピュータははるかに身近になったが、低レベルのエンドユーザー制御はしばしば犠牲になった。
+多くのデバイスではコマンドラインへのアクセス自体がない。
+囲い込みやアプリストアという企業利益に反するためでもある。
 
-Most people today don’t know what the command line is, much less why they would want to bother with it.
-As computing pioneer Alan Kay said in [a 2017 interview](https://www.fastcompany.com/40435064/what-alan-kay-thinks-about-the-iphone-and-technology-now), “Because people don't understand what computing is about, they think they have it in the iPhone, and that illusion is as bad as the illusion that 'Guitar Hero' is the same as a real guitar.”
+今日のほとんどの人はコマンドラインが何かすら知らず、ましてやなぜ気にする必要があるのかも知らない。
+計算機の先駆者 Alan Kay は [2017年のインタビュー](https://www.fastcompany.com/40435064/what-alan-kay-thinks-about-the-iphone-and-technology-now) でこう言った。「人々は計算とは何か理解していないから、iPhone の中にそれがあると思ってしまう。その錯覚は『Guitar Hero が本物のギターと同じ』という錯覚と同じくらい悪い」。
 
-Kay’s “real guitar” isn’t the CLI—not exactly.
-He was talking about ways of programming computers that offer the power of the CLI and that transcend writing software in text files.
-There is a belief among Kay’s disciples that we need to break out of a text-based local maximum that we’ve been living in for decades.
+Kay の「本物のギター」は CLI ではない——少なくとも正確には。
+彼が話していたのは、CLI の力を持ちながらテキストファイルでソフトを書くことを超える計算機のプログラミング方法だ。
+Kay の弟子たちの間には、何十年も続いているテキスト中心の局所最適から抜け出す必要があるという信念がある。
 
-It’s exciting to imagine a future where we program computers very differently.
-Even today, spreadsheets are by far the most popular programming language, and the no-code movement is taking off quickly as it attempts to replace some of the intense demand for talented programmers.
+コンピュータをまったく違う形でプログラムする未来を想像するのは刺激的だ。
+今日でも、スプレッドシートは圧倒的に最も人気のあるプログラミング言語であり、ノーコード運動は有能なプログラマへの強い需要の一部を置き換えようとして急速に拡大している。
 
-Yet with its creaky, decades-old constraints and inexplicable quirks, the command line is still the most _versatile_ corner of the computer.
-It lets you pull back the curtain, see what’s really going on, and creatively interact with the machine at a level of sophistication and depth that GUIs cannot afford.
-It’s available on almost any laptop, for anyone who wants to learn it.
-It can be used interactively, or it can be automated.
-And, it doesn’t change as fast as other parts of the system.
-There is creative value in its stability.
+それでも、きしむような数十年もの制約と不可解な癖を抱えつつ、コマンドラインはなおコンピュータの最も _汎用的_ な領域だ。
+カーテンを引いて裏側を見せ、何が本当に起きているのかを見せ、GUI では届かない精緻さと深さで機械と創造的に対話させる。
+学びたい人ならほぼどのノートPCでも使える。
+対話的にも、自動化にも使える。
+そして、他のシステム要素ほど速くは変わらない。
+その安定性には創造的価値がある。
 
-So, while we still have it, we should try to maximize its utility and accessibility.
+だから、まだ持っているうちに、その有用性とアクセシビリティを最大化すべきだ。
 
-A lot has changed about how we program computers since those early days.
-The command line of the past was _machine-first_: little more than a REPL on top of a scripting platform.
-But as general-purpose interpreted languages have flourished, the role of the shell script has shrunk.
-Today's command line is _human-first_: a text-based UI that affords access to all kinds of tools, systems and platforms.
-In the past, the editor was inside the terminal—today, the terminal is just as often a feature of the editor.
-And there’s been a proliferation of `git`-like multi-tool commands.
-Commands within commands, and high-level commands that perform entire workflows rather than atomic functions.
+初期の時代から、計算機をどうプログラムするかは大きく変わった。
+昔のコマンドラインは _machine-first_ で、スクリプト基盤上の REPL 以上のものではなかった。
+しかし汎用インタプリタ言語が花開くにつれ、シェルスクリプトの役割は縮小した。
+今日のコマンドラインは _human-first_ だ。あらゆるツール、システム、プラットフォームへアクセスするテキストUIである。
+以前はエディタが端末の中にあったが、今では端末がエディタの機能であることも多い。
+`git` のようなマルチツールコマンドも増えた。
+コマンドの中のコマンド、原子的機能ではなくワークフロー全体を実行する高レベルコマンド。
 
-Inspired by traditional UNIX philosophy, driven by an interest in encouraging a more delightful and accessible CLI environment, and guided by our experiences as programmers, we decided it was time to revisit the best practices and design principles for building command-line programs.
+伝統的な UNIX 哲学に触発され、より楽しくアクセシブルな CLI 環境を促進したいという関心と、プログラマとしての経験に導かれ、コマンドライン・プログラムのベストプラクティスと設計原則を見直す時だと判断した。
 
-Long live the command line!
+コマンドライン万歳！
 
-## Introduction {#introduction}
+## はじめに {#introduction}
 
-This document covers both high-level design philosophy, and concrete guidelines.
-It’s heavier on the guidelines because our philosophy as practitioners is not to philosophize too much.
-We believe in learning by example, so we’ve provided plenty of those.
+この文書は高レベルの設計思想と具体的なガイドラインの両方を扱う。
+実務家としてあまり哲学しない方針なので、ガイドラインの比重が大きい。
+例から学ぶのがよいと考え、多くの例を示した。
 
-This guide doesn’t cover full-screen terminal programs like emacs and vim.
-Full-screen programs are niche projects—very few of us will ever be in the position to design one.
+このガイドは emacs や vim のようなフルスクリーン端末プログラムは扱わない。
+フルスクリーンはニッチで、その設計に携わる人はごく少ない。
 
-This guide is also agnostic about programming languages and tooling in general.
+このガイドは言語やツールにも中立だ。
 
-Who is this guide for?
+このガイドの対象は？
 
-- If you are creating a CLI program and you are looking for principles and concrete best practices for its UI design, this guide is for you.
-- If you are a professional “CLI UI designer,” that’s amazing—we’d love to learn from you.
-- If you’d like to avoid obvious missteps of the variety that go against 40 years of CLI design conventions, this guide is for you.
-- If you want to delight people with your program’s good design and helpful help, this guide is definitely for you.
-- If you are creating a GUI program, this guide is not for you—though you may learn some GUI anti-patterns if you decide to read it anyway.
-- If you are designing an immersive, full-screen CLI port of Minecraft, this guide isn’t for you.
-  (But we can’t wait to see it!)
+- CLI プログラムを作っていて、UI 設計の原則や具体的ベストプラクティスが欲しい人。
+- プロの「CLI UI デザイナー」なら素晴らしい。ぜひ学ばせてほしい。
+- 40年の CLI 設計慣習に反する明白な失敗を避けたい人。
+- 良い設計と親切なヘルプで人を喜ばせたい人。
+- GUI プログラムを作っている人には向かない（ただし GUI のアンチパターンは学べるかもしれない）。
+- Minecraft の没入型フルスクリーン CLI 移植を設計している人には向かない。
+  （でもぜひ見てみたい！）
 
-## Philosophy {#philosophy}
+## 哲学 {#philosophy}
 
-These are what we consider to be the fundamental principles of good CLI design.
+良い CLI 設計の基本原則だと考えるもの。
 
-### Human-first design {#human-first-design}
+### 人間優先の設計 {#human-first-design}
 
-Traditionally, UNIX commands were written under the assumption they were going to be used primarily by other programs.
-They had more in common with functions in a programming language than with graphical applications.
+伝統的に UNIX コマンドは、主に他のプログラムから使われる前提で書かれていた。
+グラフィカルなアプリよりも、プログラミング言語の関数に近い。
 
-Today, even though many CLI programs are used primarily (or even exclusively) by humans, a lot of their interaction design still carries the baggage of the past.
-It’s time to shed some of this baggage: if a command is going to be used primarily by humans, it should be designed for humans first.
+今日、多くの CLI は人間が主に（あるいは専ら）使うのに、相互作用設計は過去の荷物を背負っている。
+人間が主に使うなら、人間優先で設計すべき。
 
-### Simple parts that work&nbsp;together {#simple-parts-that-work-together}
+### 単純な部品を組み合わせる {#simple-parts-that-work-together}
 
-A core tenet of [the original UNIX philosophy](https://en.wikipedia.org/wiki/Unix_philosophy) is the idea that small, simple programs with clean interfaces can be combined to build larger systems.
-Rather than stuff more and more features into those programs, you make programs that are modular enough to be recombined as needed.
+[オリジナルの UNIX 哲学](https://en.wikipedia.org/wiki/Unix_philosophy)の核心は、小さく単純でクリーンなインターフェースのプログラムを組み合わせて大きなシステムを作るという考え方だ。
+機能を詰め込むのではなく、必要に応じて組み替えられるほど十分にモジュール化する。
 
-In the old days, pipes and shell scripts played a crucial role in the process of composing programs together.
-Their role might have diminished with the rise of general-purpose interpreted languages, but they certainly haven’t gone away.
-What’s more, large-scale automation—in the form of CI/CD, orchestration and configuration management—has flourished.
-Making programs composable is just as important as ever.
+昔はパイプとシェルスクリプトがプログラム合成の要だった。
+汎用インタプリタ言語の台頭で役割は減ったかもしれないが、消えたわけではない。
+さらに CI/CD、オーケストレーション、構成管理といった大規模自動化が発展した。
+合成可能性は今も重要。
 
-Fortunately, the long-established conventions of the UNIX environment, designed for this exact purpose, still help us today.
-Standard in/out/err, signals, exit codes and other mechanisms ensure that different programs click together nicely.
-Plain, line-based text is easy to pipe between commands.
-JSON, a much more recent invention, affords us more structure when we need it, and lets us more easily integrate command-line tools with the web.
+幸い、この目的のために設計された UNIX 環境の長い慣習は今も役立つ。
+標準入出力/標準エラー、シグナル、終了コードなどの仕組みがプログラム同士をうまく噛み合わせる。
+行ベースのプレーンテキストはコマンド間のパイプが容易だ。
+JSON はより構造化でき、コマンドラインツールと Web の統合を容易にする。
 
-Whatever software you’re building, you can be absolutely certain that people will use it in ways you didn’t anticipate.
-Your software _will_ become a part in a larger system—your only choice is over whether it will be a well-behaved part.
+どんなソフトでも、人は想定外の使い方をする。
+あなたのソフトは _必ず_ 大きなシステムの一部になる——選べるのは行儀の良い部品になるかどうかだけ。
 
-Most importantly, designing for composability does not need to be at odds with designing for humans first.
-Much of the advice in this document is about how to achieve both.
+重要なのは、合成可能性の設計と人間優先の設計は対立しないこと。
+この文書の多くは、その両立の方法だ。
 
-### Consistency across programs {#consistency-across-programs}
+### プログラム間の一貫性 {#consistency-across-programs}
 
-The terminal’s conventions are hardwired into our fingers.
-We had to pay an upfront cost by learning about command line syntax, flags, environment variables and so on, but it pays off in long-term efficiency… as long as programs are consistent.
+端末の慣習は指に染み付いている。
+構文、フラグ、環境変数などを学ぶ初期コストはかかるが、プログラムが一貫していれば長期的に効率が上がる。
 
-Where possible, a CLI should follow patterns that already exist.
-That’s what makes CLIs intuitive and guessable; that’s what makes users efficient.
+可能な限り、既存パターンに従うべきだ。
+それが CLI を直感的で推測可能にし、ユーザーを効率的にする。
 
-That being said, sometimes consistency conflicts with ease of use.
-For example, many long-established UNIX commands don't output much information by default, which can cause confusion or worry for people less familiar with the command line.
+ただし一貫性が使いやすさと衝突することもある。
+例えば、多くの古い UNIX コマンドはデフォルトでほとんど情報を出さず、慣れていない人には混乱や不安の原因になる。
 
-When following convention would compromise a program’s usability, it might be time to break with it—but such a decision should be made with care.
+慣習に従うことで可用性が損なわれるなら、破る判断もあり得る。
+ただし慎重に。
 
-### Saying (just) enough {#saying-just-enough}
+### （ちょうど）十分に語る {#saying-just-enough}
 
-The terminal is a world of pure information.
-You could make an argument that information is the interface—and that, just like with any interface, there’s often too much or too little of it.
+端末は純粋な情報の世界だ。
+情報そのものがインターフェースだと言うこともできるし、どのインターフェースにも情報が多すぎる/少なすぎる問題がある。
 
-A command is saying too little when it hangs for several minutes and the user starts to wonder if it’s broken.
-A command is saying too much when it dumps pages and pages of debugging output, drowning what’s truly important in an ocean of loose detritus.
-The end result is the same: a lack of clarity, leaving the user confused and irritated.
+コマンドが数分ハングしてユーザーが壊れたかと疑い始めるなら「語りが少なすぎる」。
+デバッグ出力を何ページも吐き、重要な情報がゴミの海に溺れるなら「語りが多すぎる」。
+結果は同じ。明瞭さが欠け、ユーザーは混乱し苛立つ。
 
-It can be very difficult to get this balance right, but it’s absolutely crucial if software is to empower and serve its users.
+このバランスは難しいが、ユーザーを力づけ、奉仕するには不可欠だ。
 
-### Ease of discovery {#ease-of-discovery}
+### 発見容易性 {#ease-of-discovery}
 
-When it comes to making functionality discoverable, GUIs have the upper hand.
-Everything you can do is laid out in front of you on the screen, so you can find what you need without having to learn anything, and perhaps even discover things you didn’t know were possible.
+機能の発見性では GUI が有利。
+画面にすべてが見えているので、学習せずに探せるし、未知の機能も見つかる。
 
-It is assumed that command-line interfaces are the opposite of this—that you have to remember how to do everything.
-The original [Macintosh Human Interface Guidelines](https://archive.org/details/applehumaninterf00appl), published in 1987, recommend “See-and-point (instead of remember-and-type),” as if you could only choose one or the other.
+CLI はその逆だと見なされがちで、すべて覚える必要があるとされる。
+1987年の [Macintosh Human Interface Guidelines](https://archive.org/details/applehumaninterf00appl) も「覚えるより見て指す (See-and-point)」を推奨している。
 
-These things needn’t be mutually exclusive.
-The efficiency of using the command-line comes from remembering commands, but there’s no reason the commands can’t help you learn and remember.
+これは両立できる。
+CLI の効率はコマンドを覚えることから来るが、コマンドが学習と記憶を助けてもよい。
 
-Discoverable CLIs have comprehensive help texts, provide lots of examples, suggest what command to run next, suggest what to do when there is an error.
-There are lots of ideas that can be stolen from GUIs to make CLIs easier to learn and use, even for power users.
+発見可能な CLI は包括的なヘルプ、豊富な例、次に実行すべきコマンドの提案、エラー時の次の手の提案を提供する。
+GUI から盗めるアイデアは多く、パワーユーザーにとっても学習と利用がしやすくなる。
 
-_Citation: The Design of Everyday Things (Don Norman), Macintosh Human Interface Guidelines_
+_引用: The Design of Everyday Things (Don Norman), Macintosh Human Interface Guidelines_
 
-### Conversation as the&nbsp;norm {#conversation-as-the-norm}
+### 会話を標準とする {#conversation-as-the-norm}
 
-GUI design, particularly in its early days, made heavy use of _metaphor_: desktops, files, folders, recycle bins.
-It made a lot of sense, because computers were still trying to bootstrap themselves into legitimacy.
-The ease of implementation of metaphors was one of the huge advantages GUIs wielded over CLIs.
-Ironically, though, the CLI has embodied an accidental metaphor all along: it’s a conversation.
+GUI 設計、特に初期は _メタファー_ を多用した。デスクトップ、ファイル、フォルダ、ゴミ箱。
+コンピュータが正当性を確立しようとしていた時代には理にかなっていた。
+メタファーの実装容易性は GUI の大きな利点だった。
+しかし皮肉にも、CLI はずっと偶然のメタファーを体現している。CLI は会話だ。
 
-Beyond the most utterly simple commands, running a program usually involves more than one invocation.
-Usually, this is because it’s hard to get it right the first time: the user types a command, gets an error, changes the command, gets a different error, and so on, until it works.
-This mode of learning through repeated failure is like a conversation the user is having with the program.
+最も単純なコマンドを超えると、プログラムの実行はたいてい一回では終わらない。
+最初はうまくいかず、エラーを見て修正し、別のエラーを見て…を繰り返して成功する。
+この反復失敗による学習は、ユーザーがプログラムと交わす会話のようだ。
 
-Trial-and-error isn’t the only type of conversational interaction, though.
-There are others:
+試行錯誤だけが会話ではない。他にもある。
 
-- Running one command to set up a tool and then learning what commands to run to actually start using it.
-- Running several commands to set up an operation, and then a final command to run it (e.g. multiple `git add`s, followed by a `git commit`).
-- Exploring a system—for example, doing a lot of `cd` and `ls` to get a sense of a directory structure, or `git log` and `git show` to explore the history of a file.
-- Doing a dry-run of a complex operation before running it for real.
+- ツールをセットアップするために一つ実行し、実際に使い始めるためのコマンドを学ぶ。
+- 複数コマンドで準備し、最後のコマンドで実行（例: 複数の `git add` の後に `git commit`）。
+- システム探索。`cd` と `ls` でディレクトリ構造を把握したり、`git log` と `git show` でファイルの履歴を辿る。
+- 複雑な操作の本番前にドライランする。
 
-Acknowledging the conversational nature of command-line interaction means you can bring relevant techniques to bear on its design.
-You can suggest possible corrections when user input is invalid, you can make the intermediate state clear when the user is going through a multi-step process, you can confirm for them that everything looks good before they do something scary.
+会話として捉えると設計手法が見えてくる。
+入力が無効なら修正候補を提示できる。
+多段階の途中状態を明確にできる。
+怖い操作の前に確認し、安心させられる。
 
-The user is conversing with your software, whether you intended it or not.
-At worst, it’s a hostile conversation which makes them feel stupid and resentful.
-At best, it’s a pleasant exchange that speeds them on their way with newfound knowledge and a feeling of achievement.
+ユーザーは意図の有無にかかわらずソフトと会話している。
+最悪は敵対的な会話で、ユーザーを馬鹿にされた気分にさせ、恨みを生む。
+最良は心地よい対話で、知識と達成感を与え、先へ進めてくれる。
 
-_Further reading: [The Anti-Mac User Interface (Don Gentner and Jakob Nielsen)](https://www.nngroup.com/articles/anti-mac-interface/)_
+_参考: [The Anti-Mac User Interface (Don Gentner and Jakob Nielsen)](https://www.nngroup.com/articles/anti-mac-interface/)_
 
-### Robustness {#robustness-principle}
+### 堅牢性 {#robustness-principle}
 
-Robustness is both an objective and a subjective property.
-Software should _be_ robust, of course: unexpected input should be handled gracefully, operations should be idempotent where possible, and so on.
-But it should also _feel_ robust.
+堅牢性は客観的でもあり主観的でもある。
+ソフトは当然 _堅牢であるべき_ で、予期しない入力を穏当に扱い、可能なら操作を冪等にすべきだ。
+しかし _堅牢に感じる_ ことも重要だ。
 
-You want your software to feel like it isn’t going to fall apart.
-You want it to feel immediate and responsive, as if it were a big mechanical machine, not a flimsy plastic “soft switch.”
+壊れそうに感じさせたくない。
+大きな機械のように即応し、軽いプラスチックの「ソフトスイッチ」ではないと感じさせたい。
 
-Subjective robustness requires attention to detail and thinking hard about what can go wrong.
-It’s lots of little things: keeping the user informed about what’s happening, explaining what common errors mean, not printing scary-looking stack traces.
+主観的堅牢性には細部への注意と、何が起こり得るかを深く考えることが必要だ。
+小さな積み重ねで、今何が起きているかを知らせ、よくあるエラーの意味を説明し、怖いスタックトレースを出さない。
 
-As a general rule, robustness can also come from keeping it simple.
-Lots of special cases and complex code tend to make a program fragile.
+一般に、堅牢性はシンプルさからも生まれる。
+特例や複雑なコードはプログラムを脆くしがちだ。
 
-### Empathy {#empathy}
+### 共感 {#empathy}
 
-Command-line tools are a programmer’s creative toolkit, so they should be enjoyable to use.
-This doesn’t mean turning them into a video game, or using lots of emoji (though there’s nothing inherently wrong with emoji 😉).
-It means giving the user the feeling that you are on their side, that you want them to succeed, that you have thought carefully about their problems and how to solve them.
+コマンドラインツールはプログラマの創造的ツールキットなので、使って楽しいべきだ。
+これはゲーム化や絵文字乱用を意味しない（絵文字自体が悪いわけではない 😉）。
+ユーザーの味方で、成功してほしいと思い、問題と解決をよく考えたと感じさせることだ。
 
-There’s no list of actions you can take that will ensure they feel this way, although we hope that following our advice will take you some of the way there.
-Delighting the user means _exceeding their expectations_ at every turn, and that starts with empathy.
+そう感じさせる確実な行動一覧はないが、この助言はその助けになるはずだ。
+ユーザーを喜ばせるとは、常に期待を超えること。共感から始まる。
 
-### Chaos {#chaos}
+### カオス {#chaos}
 
-The world of the terminal is a mess.
-Inconsistencies are everywhere, slowing us down and making us second-guess ourselves.
+端末の世界は混沌。
+不一致は至る所にあり、手を止めさせ、迷いを生む。
 
-Yet it’s undeniable that this chaos has been a source of power.
-The terminal, like the UNIX-descended computing environment in general, places very few constraints on what you can build.
-In that space, all manner of invention has bloomed.
+それでもこの混沌が力の源であることは否定できない。
+端末、そして UNIX 系の計算機環境は、構築できるものへの制約が少ない。
+その空間であらゆる発明が花開いた。
 
-It’s ironic that this document implores you to follow existing patterns, right alongside advice that contradicts decades of command-line tradition.
-We’re just as guilty of breaking the rules as anyone.
+この文書が既存パターンに従えと促しつつ、数十年の伝統に反する助言も並べるのは皮肉だ。
+私たちも同じようにルールを破ってきた。
 
-The time might come when you, too, have to break the rules.
-Do so with intention and clarity of purpose.
+あなたもいつかルールを破る時が来る。
+意図と目的を明確にして行え。
 
 > “Abandon a standard when it is demonstrably harmful to productivity or user satisfaction.” — Jef Raskin, [The Humane Interface](https://en.wikipedia.org/wiki/The_Humane_Interface)
 
-## Guidelines {#guidelines}
+## ガイドライン {#guidelines}
 
-This is a collection of specific things you can do to make your command-line program better.
+コマンドライン・プログラムを良くするために具体的にできることの集まり。
 
-The first section contains the essential things you need to follow.
-Get these wrong, and your program will be either hard to use or a bad CLI citizen.
+最初のセクションは必須の項目。
+これを間違えると、使いにくいか、CLI 市民としての行儀が悪いプログラムになる。
 
-The rest are nice-to-haves.
-If you have the time and energy to add these things, your program will be a lot better than the average program.
+残りは「あると良い」項目。
+時間と余裕があれば、平均的なプログラムよりずっと良くなる。
 
-The idea is that, if you don’t want to think too hard about the design of your program, you don’t have to: just follow these rules and your program will probably be good.
-On the other hand, if you’ve thought about it and determined that a rule is wrong for your program, that’s fine.
-(There’s no central authority that will reject your program for not following arbitrary rules.)
+狙いは、設計についてあまり考えたくないならこのルールに従えばだいたい良いものになるということ。
+一方で、考えた末にそのルールが自分のプログラムに合わないと判断したなら、それでも構わない。
+（任意のルールに従わなかったからといって拒絶する中央権威はない。）
 
-Also—these rules aren’t written in stone.
-If you disagree with a general rule for good reason, we hope you’ll [propose a change](https://github.com/cli-guidelines/cli-guidelines).
+また、これらのルールは石に刻まれているわけではない。
+良い理由で一般ルールに反対なら、[変更提案](https://github.com/cli-guidelines/cli-guidelines) をしてほしい。
 
-### The Basics {#the-basics}
+### 基本 {#the-basics}
 
-There are a few basic rules you need to follow.
-Get these wrong, and your program will be either very hard to use, or flat-out broken.
+いくつかの基本ルールがある。
+これを間違えると、プログラムは非常に使いにくいか、完全に壊れる。
 
-**Use a command-line argument parsing library where you can.**
-Either your language’s built-in one, or a good third-party one.
-They will normally handle arguments, flag parsing, help text, and even spelling suggestions in a sensible way.
+**可能な限りコマンドライン引数パーサのライブラリを使う。**
+言語の組み込みか良質なサードパーティを使う。
+通常、引数、フラグ解析、ヘルプテキスト、スペルの提案まで扱ってくれる。
 
-Here are some that we like:
+おすすめの例:
 
-- Multi-platform: [docopt](http://docopt.org)
+- マルチプラットフォーム: [docopt](http://docopt.org)
 - Bash: [argbash](https://argbash.dev)
 - Go: [Cobra](https://github.com/spf13/cobra), [cli](https://github.com/urfave/cli)
 - Haskell: [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
@@ -281,41 +285,38 @@ Here are some that we like:
 - Rust: [clap](https://docs.rs/clap)
 - Swift: [swift-argument-parser](https://github.com/apple/swift-argument-parser)
 
-**Return zero exit code on success, non-zero on failure.**
-Exit codes are how scripts determine whether a program succeeded or failed, so you should report this correctly.
-Map the non-zero exit codes to the most important failure modes.
+**成功時は 0、失敗時は非 0 の終了コードを返す。**
+終了コードはスクリプトが成功/失敗を判断する方法なので、正しく報告する。
+非 0 の終了コードは主要な失敗モードに割り当てる。
 
-**Send output to `stdout`.**
-The primary output for your command should go to `stdout`.
-Anything that is machine readable should also go to `stdout`—this is where piping sends things by default.
+**出力は `stdout` へ。**
+コマンドの主な出力は `stdout` に流す。
+機械可読な出力も `stdout` に流すべきだ——パイプは通常ここを使う。
 
-**Send messaging to `stderr`.**
-Log messages, errors, and so on should all be sent to `stderr`.
-This means that when commands are piped together, these messages are displayed to the user and not fed into the next command.
+**メッセージは `stderr` へ。**
+ログ、エラーなどは `stderr` に送る。
+コマンドがパイプで連結されているとき、これらのメッセージはユーザーに表示され、次のコマンドには渡らない。
 
-### Help {#help}
+### ヘルプ {#help}
 
-**Display extensive help text when asked.**
-Display help when passed `-h` or `--help` flags.
-This also applies to subcommands which might have their own help text.
+**求められたら詳細なヘルプを表示する。**
+`-h` または `--help` が渡されたときにヘルプを表示する。
+サブコマンドにも同様に適用する。
 
-**Display concise help text by default.**
-When `myapp` or `myapp subcommand` requires arguments to function,
-and is run with no arguments,
-display concise help text.
+**デフォルトは簡潔なヘルプ。**
+`myapp` または `myapp subcommand` が引数を必要とする場合、引数なしで実行されたら簡潔なヘルプを表示する。
 
-You can ignore this guideline
-if your program is interactive by default (e.g. `npm init`).
+ただし、プログラムがデフォルトで対話的（例: `npm init`）なら、このガイドラインは無視してよい。
 
-The concise help text should only include:
+簡潔なヘルプに含めるものは以下だけ:
 
-- A description of what your program does.
-- One or two example invocations.
-- Descriptions of flags, unless there are lots of them.
-- An instruction to pass the `--help` flag for more information.
+- プログラムの説明。
+- 1〜2個の例。
+- フラグの説明（数が多い場合は除外）。
+- 詳細は `--help` を渡すよう指示。
 
-`jq` does this well.
-When you type `jq`, it displays an introductory description and an example, then prompts you to pass `jq --help` for the full listing of flags:
+`jq` は良い例。
+`jq` と入力すると、概要と例を表示し、`jq --help` を促す:
 
 ```
 $ jq
@@ -346,8 +347,8 @@ Example:
 For a listing of options, use jq --help.
 ```
 
-**Show full help when `-h` and `--help` are passed.**
-All of these should show help:
+**`-h` と `--help` が渡されたら必ずヘルプを表示する。**
+以下はすべてヘルプを表示すべき:
 
 ```
 $ myapp
@@ -355,10 +356,10 @@ $ myapp --help
 $ myapp -h
 ```
 
-Ignore any other flags and arguments that are passed—you should be able to add `-h` to the end of anything and it should show help.
-Don’t overload `-h`.
+他のフラグや引数は無視してよい——どんなコマンドの末尾に `-h` を足してもヘルプが出るべき。
+`-h` を別用途に使わない。
 
-If your program is `git`-like, the following should also offer help:
+プログラムが `git` 風なら、以下もヘルプにする:
 
 ```
 $ myapp help
@@ -367,29 +368,29 @@ $ myapp subcommand --help
 $ myapp subcommand -h
 ```
 
-**Provide a support path for feedback and issues.**
-A website or GitHub link in the top-level help text is common.
+**フィードバック/課題の導線を用意する。**
+トップレベルのヘルプに Web サイトや GitHub リンクを載せるのが一般的。
 
-**In help text, link to the web version of the documentation.**
-If you have a specific page or anchor for a subcommand, link directly to that.
-This is particularly useful if there is more detailed documentation on the web, or further reading that might explain the behavior of something.
+**ヘルプテキストから Web 版ドキュメントへリンクする。**
+サブコマンド専用のページやアンカーがあれば直リンクする。
+Web 側に詳細説明や補足がある場合に特に有用。
 
-**Lead with examples.**
-Users tend to use examples over other forms of documentation, so show them first in the help page, particularly the common complex uses.
-If it helps explain what it’s doing and it isn’t too long, show the actual output too.
+**例を先に出す。**
+ユーザーは他の文書より例を使うので、ヘルプページの先頭に置く。特に複雑で一般的な用途は先に。
+可能なら実際の出力も見せる。
 
-You can tell a story with a series of examples, building your way toward complex uses.
+例を連ねてストーリーとして見せ、複雑な使い方へ段階的に導くこともできる。
 
 <!-- TK example? -->
 
-**If you’ve got loads of examples, put them somewhere else,** in a cheat sheet command or a web page.
-It’s useful to have exhaustive, advanced examples, but you don’t want to make your help text really long.
+**例が多すぎるなら別に置く。** チートシートコマンドや Web ページへ。
+詳細な上級例は有用だが、ヘルプテキストを長くしすぎない。
 
-For more complex use cases, e.g. when integrating with another tool, it might be appropriate to write a fully-fledged tutorial.
+他ツール連携などの複雑なユースケースには、完全なチュートリアルが適切なこともある。
 
-**Display the most common flags and commands at the start of the help text.**
-It’s fine to have lots of flags, but if you’ve got some really common ones, display them first.
-For example, the Git command displays the commands for getting started and the most commonly used subcommands first:
+**よく使うフラグ/コマンドをヘルプ冒頭に置く。**
+フラグが多くても、よく使うものは先に表示する。
+例えば Git は開始系やよく使うサブコマンドを先に出す:
 
 ```
 $ git
@@ -420,9 +421,9 @@ examine the history and state (see also: git help revisions)
 …
 ```
 
-**Use formatting in your help text.**
-Bold headings make it much easier to scan.
-But, try to do it in a terminal-independent way so that your users aren't staring down a wall of escape characters.
+**ヘルプテキストに書式を使う。**
+太字の見出しはスキャンしやすい。
+ただし端末依存にならないようにし、エスケープ文字の壁を見せない。
 
 <pre>
 <code>
@@ -465,13 +466,13 @@ list your apps
 </code>
 </pre>
 
-Note: When `heroku apps --help` is piped through a pager, the command emits no escape characters.
+注: `heroku apps --help` を pager に通すと、エスケープ文字は出ない。
 
-**If the user did something wrong and you can guess what they meant, suggest it.**
-For example, `brew update jq` tells you that you should run `brew upgrade jq`.
+**ユーザーが間違えた時、推測できるなら提案する。**
+例えば `brew update jq` なら `brew upgrade jq` を提案する。
 
-You can ask if they want to run the suggested command, but don’t force it on them.
-For example:
+提案コマンドを実行したいか聞いてもよいが、強制しない。
+例:
 
 ```
 $ heroku pss
@@ -479,41 +480,42 @@ $ heroku pss
 Did you mean ps? [y/n]:
 ```
 
-Rather than suggesting the corrected syntax, you might be tempted to just run it for them, as if they’d typed it right in the first place.
-Sometimes this is the right thing to do, but not always.
+修正した構文を勝手に実行したくなるかもしれないが、常に正しいとは限らない。
 
-Firstly, invalid input doesn’t necessarily imply a simple typo—it can often mean the user has made a logical mistake, or misused a shell variable.
-Assuming what they meant can be dangerous, especially if the resulting action modifies state.
+まず、無効入力は単なるタイポとは限らず、論理的な誤りやシェル変数の誤用のことも多い。
+意図を決めつけるのは危険で、特に状態を変更する操作ならなおさら。
 
-Secondly, be aware that if you change what the user typed, they won’t learn the correct syntax.
-In effect, you’re ruling that the way they typed it is valid and correct, and you’re committing to supporting that indefinitely.
-Be intentional in making that decision, and document both syntaxes.
+次に、ユーザー入力を書き換えると正しい構文を学べない。
+事実上、その入力を正当な構文として永続的にサポートすることになる。
+その判断は意図的に行い、両方の構文を文書化すること。
 
-_Further reading: [“Do What I Mean”](http://www.catb.org/~esr/jargon/html/D/DWIM.html)_
+_参考: [“Do What I Mean”](http://www.catb.org/~esr/jargon/html/D/DWIM.html)_
 
-**If your command is expecting to have something piped to it and `stdin` is an interactive terminal, display help immediately and quit.**
-This means it doesn’t just hang, like `cat`.
-Alternatively, you could print a log message to `stderr`.
+**コマンドがパイプ入力を期待しているのに `stdin` が対話端末なら、すぐヘルプを出して終了する。**
+`cat` のように黙って待たない。
+代わりに `stderr` にログメッセージを出してもよい。
 
-### Documentation {#documentation}
+### ドキュメント {#documentation}
 
-The purpose of [help text](#help) is to give a brief, immediate sense of what your tool is, what options are available, and how to perform the most common tasks.
-Documentation, on the other hand, is where you go into full detail.
-It’s where people go to understand what your tool is for, what it _isn’t_ for, how it works and how to do everything they might need to do.
+[ヘルプテキスト](#help) の目的は、ツールの概要、利用可能なオプション、最も一般的なタスクのやり方を短く伝えること。
+一方でドキュメントは詳細を語る場所だ。
+ツールが何のためにあり、何 _ではない_ のか、どう動き、どう使えば良いのかを説明する。
 
-**Provide web-based documentation.**
-People need to be able to search online for your tool’s documentation, and to link other people to specific parts.
-The web is the most inclusive documentation format available.
+**Web ベースのドキュメントを提供する。**
+オンライン検索でき、他人に特定箇所をリンクできる必要がある。
+Web は最も包括的なドキュメント形式だ。
 
-**Provide terminal-based documentation.**
-Documentation in the terminal has several nice properties: it’s fast to access, it stays in sync with the specific installed version of the tool, and it works without an internet connection.
+**端末ベースのドキュメントも提供する。**
+端末ドキュメントはアクセスが速く、インストール済みバージョンと同期し、ネットなしでも読める。
 
-**Consider providing man pages.**
-[man pages](https://en.wikipedia.org/wiki/Man_page), Unix’s original system of documentation, are still in use today, and many users will reflexively check `man mycmd` as a first step when trying to learn about your tool.
-To make them easier to generate, you can use a tool like [ronn](http://rtomayko.github.io/ronn/ronn.1.html) (which can also generate your web docs).
+**man ページの提供を検討する。**
+[man ページ](https://en.wikipedia.org/wiki/Man_page)は UNIX の元祖ドキュメントで、今も使われる。
+多くのユーザーは `man mycmd` を最初に試す。
+生成を容易にするなら [ronn](http://rtomayko.github.io/ronn/ronn.1.html) などを使う（Web ドキュメント生成にも使える）。
 
-However, not everyone knows about `man`, and it doesn’t run on all platforms, so you should also make sure your terminal docs are accessible via your tool itself.
-For example, `git` and `npm` make their man pages accessible via the `help` subcommand, so `npm help ls` is equivalent to `man npm-ls`.
+ただし `man` を知らない人もいるし、全プラットフォームで動くわけではない。
+そのため、端末ドキュメントはツール自身からもアクセスできるようにする。
+例えば `git` や `npm` は `help` サブコマンドで man ページにアクセスでき、`npm help ls` は `man npm-ls` と同等。
 
 ```
 NPM-LS(1)                                                            NPM-LS(1)
@@ -533,53 +535,53 @@ DESCRIPTION
        ...
 ```
 
-### Output {#output}
+### 出力 {#output}
 
-**Human-readable output is paramount.**
-Humans come first, machines second.
-The most simple and straightforward heuristic for whether a particular output stream (`stdout` or `stderr`) is being read by a human is _whether or not it’s a TTY_.
-Whatever language you’re using, it will have a utility or library for doing this (e.g. [Python](https://stackoverflow.com/questions/858623/how-to-recognize-whether-a-script-is-running-on-a-tty), [Node](https://nodejs.org/api/process.html#process_a_note_on_process_i_o), [Go](https://github.com/mattn/go-isatty)).
+**人間可読な出力が最重要。**
+人間が先、機械は後。
+特定の出力ストリーム（`stdout`/`stderr`）が人間に読まれているかの最も簡単な判定は _TTY かどうか_ だ。
+どの言語にも判定ユーティリティ/ライブラリがある（例: [Python](https://stackoverflow.com/questions/858623/how-to-recognize-whether-a-script-is-running-on-a-tty), [Node](https://nodejs.org/api/process.html#process_a_note_on_process_i_o), [Go](https://github.com/mattn/go-isatty)）。
 
-_Further reading on [what a TTY is](https://unix.stackexchange.com/a/4132)._
+_TTY とは何か: [参考](https://unix.stackexchange.com/a/4132)_
 
-**Have machine-readable output where it does not impact usability.**
-Streams of text is the universal interface in UNIX.
-Programs typically output lines of text, and programs typically expect lines of text as input,
-therefore you can compose multiple programs together.
-This is normally done to make it possible to write scripts,
-but it can also help the usability for humans using programs.
-For example, a user should be able to pipe output to `grep` and it should do what they expect.
+**ユーザビリティを損なわない範囲で機械可読な出力を用意する。**
+UNIX における普遍的インターフェースはテキストのストリームだ。
+プログラムは通常テキスト行を出力し、通常テキスト行を入力として期待する。
+ゆえに複数プログラムを合成できる。
+これはスクリプト作成のためだけでなく、人間の使いやすさにも寄与する。
+例えば、ユーザーが出力を `grep` にパイプして期待通りに動くべきだ。
 
 > “Expect the output of every program to become the input to another, as yet unknown, program.”
 > — [Doug McIlroy](http://web.archive.org/web/20220609080931/https://homepage.cs.uri.edu/~thenry/resources/unix_art/ch01s06.html)
 
-**If human-readable output breaks machine-readable output, use `--plain` to display output in plain, tabular text format for integration with tools like `grep` or `awk`.**
-In some cases, you might need to output information in a different way to make it human-readable.
+**人間可読な出力が機械可読性を壊すなら `--plain` を用意する。**
+`grep` や `awk` と連携できるよう、プレーンな表形式で出力する。
 
 <!-- (TK example with and without --plain) -->
 
-For example, if you are displaying a line-based table, you might choose to split a cell into multiple lines, fitting in more information while keeping it within the width of the screen.
-This breaks the expected behavior of there being one piece of data per line, so you should provide a `--plain` flag for scripts, which disables all such manipulation and outputs one record per line.
+例えば行ベースのテーブル表示で、セルを複数行に分割して画面幅に収める場合。
+これは「1行=1レコード」の前提を崩すので、`--plain` フラグで操作を無効化し、1行1レコードを出力すべき。
 
-**Display output as formatted JSON if `--json` is passed.**
-JSON allows for more structure than plain text, so it makes it much easier to output and handle complex data structures.
-[`jq`](https://stedolan.github.io/jq/) is a common tool for working with JSON on the command-line, and there is now a [whole ecosystem of tools](https://ilya-sher.org/2018/04/10/list-of-json-tools-for-command-line/) that output and manipulate JSON.
+**`--json` が渡されたら整形 JSON で出力する。**
+JSON はプレーンテキストより構造化でき、複雑なデータ構造の出力や処理が容易。
+[`jq`](https://stedolan.github.io/jq/) はコマンドライン JSON ツールとして一般的で、JSON の出力/操作ツールの[エコシステム](https://ilya-sher.org/2018/04/10/list-of-json-tools-for-command-line/)もある。
 
-It is also widely used on the web, so by using JSON as the input and output of programs, you can pipe directly to and from web services using `curl`.
+JSON は Web でも広く使われるため、`curl` を使って Web サービスへ直接パイプ入出力できる。
 
-**Display output on success, but keep it brief.**
-Traditionally, when nothing is wrong, UNIX commands display no output to the user.
-This makes sense when they’re being used in scripts, but can make commands appear to be hanging or broken when used by humans.
-For example, `cp` will not print anything, even if it takes a long time.
+**成功時の出力は出すが短くする。**
+伝統的に UNIX コマンドは問題がなければ出力しない。
+スクリプトでは理にかなうが、人間が使うとハングや故障に見えることがある。
+例えば `cp` は時間がかかっても何も表示しない。
 
-It’s rare that printing nothing at all is the best default behavior, but it’s usually best to err on the side of less.
+何も出さないのが最良というケースは稀で、通常は「少なめ」に倒すのが良い。
 
-For instances where you do want no output (for example, when used in shell scripts), to avoid clumsy redirection of `stderr` to `/dev/null`, you can provide a `-q` option to suppress all non-essential output.
+シェルスクリプト向けに出力を無くしたい場合、`stderr` を `/dev/null` に捨てるのは不格好なので、非必須出力を抑える `-q` オプションを提供するとよい。
 
-**If you change state, tell the user.**
-When a command changes the state of a system, it’s especially valuable to explain what has just happened, so the user can model the state of the system in their head—particularly if the result doesn’t directly map to what the user requested.
+**状態を変更したらユーザーに伝える。**
+システムの状態を変えるコマンドでは、何が起きたかを説明する価値が高い。
+結果がユーザーの要求と直接一致しない場合ほど重要。
 
-For example, `git push` tells you exactly what it is doing, and what the new state of the remote branch is:
+例えば `git push` は何をしているか、リモートの新しい状態が何かを明確に示す:
 
 ```
 $ git push
@@ -594,10 +596,10 @@ To github.com:replicate/replicate.git
  + 6c22c90...a2a5217 bfirsh/fix-delete -> bfirsh/fix-delete
 ```
 
-**Make it easy to see the current state of the system.**
-If your program does a lot of complex state changes and it is not immediately visible in the filesystem, make sure you make this easy to view.
+**現在の状態を見やすくする。**
+プログラムが複雑な状態変更をするのに、ファイルシステムから直感的に分からない場合は、状態の可視化を容易にする。
 
-For example, `git status` tells you as much information as possible about the current state of your Git repository, and some hints at how to modify the state:
+例えば `git status` は現在の状態を可能な限り多く伝え、状態を変えるためのヒントも出す:
 
 ```
 $ git status
@@ -612,20 +614,19 @@ Changes not staged for commit:
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
-**Suggest commands the user should run.**
-When several commands form a workflow, suggesting to the user commands they can run next helps them learn how to use your program and discover new functionality.
-For example, in the `git status` output above, it suggests commands you can run to modify the state you are viewing.
+**次に実行すべきコマンドを提案する。**
+複数コマンドで構成されるワークフローでは、次に実行すべきコマンドを提案すると学習や新機能発見に役立つ。
+上の `git status` も状態を変更するコマンドを提案している。
 
-**Actions crossing the boundary of the program’s internal world should usually be explicit.**
-This includes things like:
+**プログラム内部の境界を越える操作は明示的にする。**
+例:
 
-- Reading or writing files that the user didn’t explicitly pass as arguments (unless those files are storing internal program state, such as a cache).
-- Talking to a remote server, e.g. to download a file.
+- ユーザーが明示的に渡していないファイルを読み書きする（キャッシュなど内部状態を保存するファイルは除く）。
+- リモートサーバーへ通信しファイルをダウンロードする。
 
-**Increase information density—with ASCII art!**
-For example, `ls` shows permissions in a scannable way.
-When you first see it, you can ignore most of the information.
-Then, as you learn how it works, you pick out more patterns over time.
+**ASCII アートで情報密度を上げる。**
+例えば `ls` は権限をスキャンしやすく表示する。
+最初はほとんど無視でき、慣れるにつれて多くのパターンを拾える。
 
 ```
 -rw-r--r-- 1 root root     68 Aug 22 23:20 resolv.conf
@@ -639,30 +640,30 @@ drwxr-xr-x 2 root root   4.0K Jul 20 14:57 skel
 -rw-r--r-- 1 root root      0 Jul 20 14:43 subuid
 ```
 
-**Use color with intention.**
-For example, you might want to highlight some text so the user notices it, or use red to indicate an error.
-Don’t overuse it—if everything is a different color, then the color means nothing and only makes it harder to read.
+**色は意図的に使う。**
+ユーザーの注意を引きたい文字をハイライトしたり、エラーを赤で示したり。
+使い過ぎは禁物——すべてが色だと色の意味が失われ読みづらくなる。
 
-**Disable color if your program is not in a terminal or the user requested it.**
-These things should disable colors:
+**端末でない場合やユーザーが要求した場合は色を無効化する。**
+次の場合は色を無効にする:
 
-- `stdout` or `stderr` is not an interactive terminal (a TTY).
-  It’s best to individually check—if you’re piping `stdout` to another program, it’s still useful to get colors on `stderr`.
-- The `NO_COLOR` environment variable is set and it is not empty (regardless of its value).
-- The `TERM` environment variable has the value `dumb`.
-- The user passes the option `--no-color`.
-- You may also want to add a `MYAPP_NO_COLOR` environment variable in case users want to disable color specifically for your program.
+- `stdout` または `stderr` が対話端末 (TTY) ではない。
+  個別に判定するのが良い——`stdout` をパイプしていても `stderr` には色が有用な場合がある。
+- `NO_COLOR` 環境変数が設定され空でない（値に関わらず）。
+- `TERM` 環境変数が `dumb`。
+- ユーザーが `--no-color` を渡した。
+- プログラム専用の `MYAPP_NO_COLOR` を用意してもよい。
 
-_Further reading: [no-color.org](https://no-color.org/), [12 Factor CLI Apps](https://medium.com/@jdxcode/12-factor-cli-apps-dd3c227a0e46)_
+_参考: [no-color.org](https://no-color.org/), [12 Factor CLI Apps](https://medium.com/@jdxcode/12-factor-cli-apps-dd3c227a0e46)_
 
-**If `stdout` is not an interactive terminal, don’t display any animations.**
-This will stop progress bars turning into Christmas trees in CI log output.
+**`stdout` が対話端末でないならアニメーションを表示しない。**
+CI ログの進捗バーがクリスマスツリー化するのを防ぐ。
 
-**Use symbols and emoji where it makes things clearer.**
-Pictures can be better than words if you need to make several things distinct, catch the user’s attention, or just add a bit of character.
-Be careful, though—it can be easy to overdo it and make your program look cluttered or feel like a toy.
+**明確化に役立つなら記号や絵文字を使う。**
+いくつかの要素を区別したいとき、注意を引きたいとき、少し個性を足したいとき、文字より絵の方が伝わることがある。
+ただしやりすぎると散らかって見えたり、玩具のように感じられる。
 
-For example, [yubikey-agent](https://github.com/FiloSottile/yubikey-agent) uses emoji to add structure to the output so it isn’t just a wall of text, and a ❌ to draw your attention to an important piece of information:
+例えば [yubikey-agent](https://github.com/FiloSottile/yubikey-agent) は絵文字で構造を付け、❌ で重要な情報に注意を向けさせている:
 
 ```shell-session
 $ yubikey-agent -setup
@@ -684,170 +685,173 @@ UwlHnUFXgENO3ifPZd8zoSKMxESxxot4tMgvfXjmRp5G3BGrAnonncE7Aj11pn3SSYgEcrrn2sMyLGpV
 💭 Remember: everything breaks, have a backup plan for when this YubiKey does.
 ```
 
-**By default, don’t output information that’s only understandable by the creators of the software.**
-If a piece of output serves only to help you (the developer) understand what your software is doing, it almost certainly shouldn’t be displayed to normal users by default—only in verbose mode.
+**デフォルトで、開発者だけが理解できる情報は出力しない。**
+出力が開発者の理解のためだけなら、通常ユーザーには不要で、デフォルトでは出すべきではない。必要なら verbose で。
 
-Invite usability feedback from outsiders and people who are new to your project.
-They’ll help you see important issues that you are too close to the code to notice.
+外部の人、プロジェクトに新しい人からのユーザビリティ・フィードバックを歓迎する。
+コードに近すぎると重要な問題が見えないので助けになる。
 
-**Don’t treat `stderr` like a log file, at least not by default.**
-Don’t print log level labels (`ERR`, `WARN`, etc.) or extraneous contextual information, unless in verbose mode.
+**`stderr` をログファイル扱いしない（少なくともデフォルトでは）。**
+`ERR` や `WARN` などのログレベルや余計な文脈情報は出さない。必要なら verbose で。
 
-**Use a pager (e.g. `less`) if you are outputting a lot of text.**
-For example, `git diff` does this by default.
-Using a pager can be error-prone, so be careful with your implementation such that you don’t make the experience worse for the user.
-Use a pager only if `stdin` or `stdout` is an interactive terminal.
+**大量のテキストは pager（例: `less`）を使う。**
+例えば `git diff` はデフォルトで pager を使う。
+pager は実装を間違えると体験が悪化するので注意。
+`stdin` または `stdout` が対話端末のときだけ pager を使う。
 
-A good sensible set of options to use for `less` is `less -FIRX`.
-This does not page if the content fills one screen, ignores case when you search, enables color and formatting, and leaves the contents on the screen when `less` quits.
+`less` の適切なオプション例は `less -FIRX`。
+1画面ならページングせず、検索は大文字小文字を無視し、色と書式を有効化し、終了後も内容を残す。
 
-There might be libraries in your language that are more robust than piping to `less`.
-For example, [pypager](https://github.com/prompt-toolkit/pypager) in Python.
+言語によっては `less` へのパイプより堅牢なライブラリがある。
+例えば Python の [pypager](https://github.com/prompt-toolkit/pypager)。
 
-### Errors {#errors}
+### エラー {#errors}
 
-One of the most common reasons to consult documentation is to fix errors.
-If you can make errors into documentation, then this will save the user loads of time.
+ドキュメントを見る最も一般的な理由はエラー解決だ。
+エラー自体をドキュメントにできれば、ユーザーの時間を大幅に節約できる。
 
-**Catch errors and rewrite them for humans.**
-If you’re expecting an error to happen, catch it and rewrite the error message to be useful.
-Think of it like a conversation, where the user has done something wrong and the program is guiding them in the right direction.
-Example: “Can’t write to file.txt. You might need to make it writable by running ‘chmod +w file.txt’.”
+**エラーを捕捉し、人間向けに書き換える。**
+予期できるエラーは捕捉し、役に立つメッセージに書き換える。
+会話のように、ユーザーが間違えた時に正しい方向へ導く。
+例: 「file.txt に書き込めません。`chmod +w file.txt` で書き込み可能にする必要があるかもしれません。」
 
-**Signal-to-noise ratio is crucial.**
-The more irrelevant output you produce, the longer it’s going to take the user to figure out what they did wrong.
-If your program produces multiple errors of the same type, consider grouping them under a single explanatory header instead of printing many similar-looking lines.
+**S/N 比が重要。**
+無関係な出力が多いほど、ユーザーが問題を理解するのに時間がかかる。
+同種のエラーが複数あるなら、似た行を大量に出す代わりに 1 つの説明ヘッダにまとめることを検討する。
 
-**Consider where the user will look first.**
-Put the most important information at the end of the output.
-The eye will be drawn to red text, so use it intentionally and sparingly.
+**ユーザーが最初に見る場所を考える。**
+最重要情報は出力の末尾に置く。
+赤いテキストは目に付くので意図的かつ控えめに使う。
 
-**If there is an unexpected or unexplainable error, provide debug and traceback information, and instructions on how to submit a bug.**
-That said, don’t forget about the signal-to-noise ratio: you don’t want to overwhelm the user with information they don’t understand.
-Consider writing the debug log to a file instead of printing it to the terminal.
+**予期しない/説明不能なエラーにはデバッグとトレース情報、バグ報告方法を提供する。**
+ただし S/N 比を忘れない。理解できない情報で圧倒しない。
+デバッグログは端末に出す代わりにファイルへ書くのもよい。
 
-**Make it effortless to submit bug reports.**
-One nice thing you can do is provide a URL and have it pre-populate as much information as possible.
+**バグ報告を手間なくする。**
+URL を提供し、可能な限り情報を事前入力するのは良い。
 
-_Further reading: [Google: Writing Helpful Error Messages](https://developers.google.com/tech-writing/error-messages), [Nielsen Norman Group: Error-Message Guidelines](https://www.nngroup.com/articles/error-message-guidelines)_
+_参考: [Google: Writing Helpful Error Messages](https://developers.google.com/tech-writing/error-messages), [Nielsen Norman Group: Error-Message Guidelines](https://www.nngroup.com/articles/error-message-guidelines)_
 
-### Arguments and flags {#arguments-and-flags}
+### 引数とフラグ {#arguments-and-flags}
 
-A note on terminology:
+用語メモ:
 
-- _Arguments_, or _args_, are positional parameters to a command.
-  For example, the file paths you provide to `cp` are args.
-  The order of args is often important: `cp foo bar` means something different from `cp bar foo`.
-- _Flags_ are named parameters, denoted with either a hyphen and a single-letter name (`-r`) or a double hyphen and a multiple-letter name (`--recursive`).
-  They may or may not also include a user-specified value (`--file foo.txt`, or `--file=foo.txt`).
-  The order of flags, generally speaking, does not affect program semantics.
+- _Arguments_（args）はコマンドの位置引数。
+  例: `cp` に渡すファイルパス。
+  args の順序は重要で、`cp foo bar` は `cp bar foo` と意味が違う。
+- _Flags_ は名前付きパラメータで、ハイフン+1文字（`-r`）またはダブルハイフン+複数文字（`--recursive`）。
+  ユーザー指定の値を含む場合もある（`--file foo.txt` または `--file=foo.txt`）。
+  一般にフラグの順序は意味に影響しない。
 
-**Prefer flags to args.**
-It’s a bit more typing, but it makes it much clearer what is going on.
-It also makes it easier to make changes to how you accept input in the future.
-Sometimes when using args, it’s impossible to add new input without breaking existing behavior or creating ambiguity.
+**args よりフラグを優先する。**
+少しタイプは増えるが、何が起きているかが明確になる。
+将来的な入力変更も容易。
+args だけだと新しい入力を追加できず、互換性を壊す/曖昧になることがある。
 
-_Citation: [12 Factor CLI Apps](https://medium.com/@jdxcode/12-factor-cli-apps-dd3c227a0e46)._
+_引用: [12 Factor CLI Apps](https://medium.com/@jdxcode/12-factor-cli-apps-dd3c227a0e46)._ 
 
-**Have full-length versions of all flags.**
-For example, have both `-h` and `--help`.
-Having the full version is useful in scripts where you want to be verbose and descriptive, and you don’t have to look up the meaning of flags everywhere.
+**すべてのフラグにフルネーム版を用意する。**
+例: `-h` と `--help`。
+スクリプトでは長いほうが読みやすく、意味を調べる手間が減る。
 
-_Citation: [GNU Coding Standards](https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html)._
+_引用: [GNU Coding Standards](https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html)._ 
 
-**Only use one-letter flags for commonly used flags,** particularly at the top-level when using subcommands.
-That way you don’t “pollute” your namespace of short flags, forcing you to use convoluted letters and cases for flags you add in the future.
+**1文字フラグはよく使うものだけにする。**
+特にサブコマンド構成のトップレベルでは重要。
+短い名前空間を汚すと、将来追加するフラグで苦労する。
 
-**Multiple arguments are fine for simple actions against multiple files.**
-For example, `rm file1.txt file2.txt file3.txt`.
-This also makes it work with globbing: `rm *.txt`.
+**単純な複数ファイル操作なら複数の引数は OK。**
+例: `rm file1.txt file2.txt file3.txt`。
+グロブにも対応できる: `rm *.txt`。
 
-**If you’ve got two or more arguments for different things, you’re probably doing something wrong.**
-The exception is a common, primary action, where the brevity is worth memorizing.
-For example, `cp <source> <destination>`.
+**異なる意味の引数が 2 つ以上あるなら、たぶん設計が悪い。**
+例外は一般的で主要な操作で、短さが覚える価値に勝るとき。
+例: `cp <source> <destination>`。
 
-_Citation: [12 Factor CLI Apps](https://medium.com/@jdxcode/12-factor-cli-apps-dd3c227a0e46)._
+_引用: [12 Factor CLI Apps](https://medium.com/@jdxcode/12-factor-cli-apps-dd3c227a0e46)._ 
 
-**Use standard names for flags, if there is a standard.**
-If another commonly used command uses a flag name, it’s best to follow that existing pattern.
-That way, a user doesn’t have to remember two different options (and which command it applies to), and users can even guess an option without having to look at the help text.
+**標準があるなら標準のフラグ名を使う。**
+一般的なコマンドが使うフラグ名は踏襲すべき。
+ユーザーが複数のオプションを覚えずに済み、ヘルプを見なくても推測できる。
 
-Here's a list of commonly used options:
+よく使われるオプション一覧:
 
-- `-a`, `--all`: All.
-  For example, `ps`, `fetchmail`.
-- `-d`, `--debug`: Show debugging output.
-- `-f`, `--force`: Force.
-  For example, `rm -f` will force the removal of files, even if it thinks it does not have permission to do it.
-  This is also useful for commands which are doing something destructive that usually require user confirmation, but you want to force it to do that destructive action in a script.
-- `--json`: Display JSON output.
-  See the [output](#output) section.
-- `-h`, `--help`: Help.
-  This should only mean help.
-  See the [help](#help) section.
-- `-n`, `--dry-run`: Dry run.
-  Do not run the command, but describe the changes that would occur if the command were run. For example, `rsync`, `git add`.
-- `--no-input`: See the [interactivity](#interactivity) section.
-- `-o`, `--output`: Output file.
-  For example, `sort`, `gcc`.
-- `-p`, `--port`: Port.
-  For example, `psql`, `ssh`.
-- `-q`, `--quiet`: Quiet.
-  Display less output.
-  This is particularly useful when displaying output for humans that you might want to hide when running in a script.
-- `-u`, `--user`: User.
-  For example, `ps`, `ssh`.
-- `--version`: Version.
-- `-v`: This can often mean either verbose or version.
-  You might want to use `-d` for verbose and this for version, or for nothing to avoid confusion.
+- `-a`, `--all`: すべて。
+  例: `ps`, `fetchmail`.
+- `-d`, `--debug`: デバッグ出力。
+- `-f`, `--force`: 強制。
+  例: `rm -f` は権限がなくても削除を強行する。
+  破壊的操作で通常は確認が必要な場合に、スクリプトで強制するためにも使える。
+- `--json`: JSON 出力。
+  [出力](#output) 参照。
+- `-h`, `--help`: ヘルプ。
+  ヘルプ以外の意味に使わない。
+  [ヘルプ](#help) 参照。
+- `-n`, `--dry-run`: ドライラン。
+  コマンドを実行せず、実行した場合に起きる変更を説明する。
+  例: `rsync`, `git add`.
+- `--no-input`: [対話](#interactivity) 参照。
+- `-o`, `--output`: 出力ファイル。
+  例: `sort`, `gcc`.
+- `-p`, `--port`: ポート。
+  例: `psql`, `ssh`.
+- `-q`, `--quiet`: 静かに。
+  出力を減らす。
+  人間向けの出力をスクリプトでは隠したい時に便利。
+- `-u`, `--user`: ユーザー。
+  例: `ps`, `ssh`.
+- `--version`: バージョン。
+- `-v`: verbose か version のどちらかを意味しがち。
+  verbose は `-d` にし、`-v` を version にするか、混乱を避けるため使わない手もある。
 
-**Make the default the right thing for most users.**
-Making things configurable is good, but most users are not going to find the right flag and remember to use it all the time (or alias it).
-If it’s not the default, you’re making the experience worse for most of your users.
+**デフォルトを大多数にとって正しいものにする。**
+設定可能なのは良いが、多くのユーザーは適切なフラグを見つけて毎回使わない（エイリアスもしない）。
+デフォルトでないと、多くのユーザー体験が悪化する。
 
-For example, `ls` has terse default output to optimize for scripts and other historical reasons, but if it were designed today, it would probably default to `ls -lhF`.
+例えば `ls` は歴史的理由でデフォルトが簡素だが、今日設計するなら `ls -lhF` がデフォルトになりそうだ。
 
-**Prompt for user input.**
-If a user doesn’t pass an argument or flag, prompt for it.
-(See also: [Interactivity](#interactivity))
+**ユーザー入力を促す。**
+引数やフラグが渡されなければ、入力を促す。
+（[対話](#interactivity) も参照）
 
-**Never _require_ a prompt.**
-Always provide a way of passing input with flags or arguments.
-If `stdin` is not an interactive terminal, skip prompting and just require those flags/args.
+**プロンプトを _必須_ にしない。**
+必ずフラグ/引数で入力できるようにする。
+`stdin` が対話端末でないならプロンプトをスキップし、必要なフラグ/引数を要求する。
 
-**Confirm before doing anything dangerous.**
-A common convention is to prompt for the user to type `y` or `yes` if running interactively, or requiring them to pass `-f` or `--force` otherwise.
+**危険な操作の前に確認する。**
+一般的には、対話時は `y`/`yes` を入力させるか、非対話時は `-f`/`--force` を要求する。
 
-“Dangerous” is a subjective term, and there are differing levels of danger:
+「危険」は主観で、段階がある:
 
-- **Mild:** A small, local change such as deleting a file.
-  You might want to prompt for confirmation, you might not.
-  For example, if the user is explicitly running a command called something like “delete,” you probably don’t need to ask.
-- **Moderate:** A bigger local change like deleting a directory, a remote change like deleting a resource of some kind, or a complex bulk modification that can’t be easily undone.
-  You usually want to prompt for confirmation here.
-  Consider giving the user a way to “dry run” the operation so they can see what’ll happen before they commit to it.
-- **Severe:** Deleting something complex, like an entire remote application or server.
-  You don’t just want to prompt for confirmation here—you want to make it hard to confirm by accident.
-  Consider asking them to type something non-trivial such as the name of the thing they’re deleting.
-  Let them alternatively pass a flag such as `--confirm="name-of-thing"`, so it’s still scriptable.
+- **軽度:** 小さなローカル変更（例: ファイル削除）。
+  確認する場合も、しない場合もある。
+  例えばコマンド名が明確に「delete」のようなら、確認不要かもしれない。
+- **中程度:** ディレクトリ削除のような大きなローカル変更、リモート資源削除、容易に取り消せない複雑な一括変更。
+  通常は確認すべき。
+  ドライランで事前に内容を見せることを検討する。
+- **重大:** リモートアプリやサーバー全体の削除など。
+  確認だけでなく、誤操作を避けるために確認しづらくする。
+  削除対象の名前の入力など、軽くない文字列を要求する。
+  それでもスクリプト化できるよう、`--confirm="name-of-thing"` のようなフラグを用意する。
 
-Consider whether there are non-obvious ways to accidentally destroy things.
-For example, imagine a situation where changing a number in a configuration file from 10 to 1 means that 9 things will be implicitly deleted—this should be considered a severe risk, and should be difficult to do by accident.
+非自明な破壊の可能性も考える。
+例えば、設定ファイルの数値を 10 から 1 に変えると 9 件が暗黙削除されるような場合は重大リスクとして扱い、誤操作しづらくすべきだ。
 
-**If input or output is a file, support `-` to read from `stdin` or write to `stdout`.**
-This lets the output of another command be the input of your command and vice versa, without using a temporary file.
-For example, `tar` can extract files from `stdin`:
+**入出力がファイルなら `-` を `stdin`/`stdout` に対応させる。**
+他コマンドの出力を自コマンドの入力に、逆も可能になり、一時ファイルが不要。
+例: `tar` は `stdin` から展開できる:
 
 ```
 $ curl https://example.com/something.tar.gz | tar xvf -
 ```
 
-**If a flag can accept an optional value, allow a special word like “none”.**
-For example, `ssh -F` takes an optional filename of an alternative `ssh_config` file, and `ssh -F none` runs SSH with no config file. Don’t just use a blank value—this can make it ambiguous whether arguments are flag values or arguments.
+**フラグが任意値を取るなら “none” のような特別語を許可する。**
+例: `ssh -F` は代替 `ssh_config` ファイルの任意値を取るが、`ssh -F none` で設定なしで動かせる。
+空文字だけにしない。引数がフラグ値か通常引数か曖昧になる。
 
-**If possible, make arguments, flags and subcommands order-independent.**
-A lot of CLIs, especially those with subcommands, have unspoken rules on where you can put various arguments.
-For example a command might have a `--foo` flag that only works if you put it before the subcommand:
+**可能なら引数・フラグ・サブコマンドの順序依存をなくす。**
+多くの CLI、特にサブコマンド構成では、引数を置ける位置が暗黙的に決まっている。
+例えば `--foo` がサブコマンド前でしか効かない:
 
 ```
 $ mycmd --foo=1 subcmd
@@ -857,97 +861,96 @@ $ mycmd subcmd --foo=1
 unknown flag: --foo
 ```
 
-This can be very confusing for the user—especially given that one of the most common things users do when trying to get a command to work is to hit the up arrow to get the last invocation, stick another option on the end, and run it again.
-If possible, try to make both forms equivalent, although you might run up against the limitations of your argument parser.
+これは非常に混乱を招く。
+特にユーザーがよくやるのは「前回のコマンドを上矢印で出し、末尾にオプションを足して再実行」だからだ。
+可能なら両方を同等に扱う。
+ただしパーサの制約に当たることもある。
 
-**Do not read secrets directly from flags.**
-When a command accepts a secret, e.g. via a `--password` flag,
-the flag value will leak the secret into `ps` output and potentially shell history.
-And, this sort of flag encourages the use of insecure environment variables for secrets.
-(Environment variables are insecure because they can often be read by other users, their values end up in debug logs, etc.)
+**秘密情報をフラグから直接読まない。**
+`--password` のようなフラグは `ps` 出力やシェル履歴に漏れる。
+また、環境変数で秘密を扱う悪習も誘発する。
+（環境変数は他ユーザーに読まれたり、デバッグログに載ったりしやすい。）
 
-Consider accepting sensitive data only via files, e.g. with a `--password-file` flag, or via `stdin`.
-A `--password-file` flag allows a secret to be passed in discreetly, in a wide variety of contexts.
+機密データは `--password-file` のようなファイル経由、または `stdin` で受け取るのが良い。
+`--password-file` は多くの文脈で秘密を目立たず渡せる。
 
-(It’s possible to pass a file’s contents into a flag in Bash by using `--password $(< password.txt)`.
-This approach has the same security problems mentioned above.
-It’s best avoided.)
+（Bash なら `--password $(< password.txt)` でファイル内容をフラグに入れられるが、上記と同じ問題があるので避ける。）
 
-### Interactivity {#interactivity}
+### 対話 {#interactivity}
 
-**Only use prompts or interactive elements if `stdin` is an interactive terminal (a TTY).**
-This is a pretty reliable way to tell whether you’re piping data into a command or whether it's being run in a script, in which case a prompt won’t work and you should throw an error telling the user what flag to pass.
+**`stdin` が対話端末 (TTY) のときだけプロンプトや対話要素を使う。**
+データをパイプしているのか、スクリプト内で実行されているのかを判定する信頼性の高い方法だ。
+その場合プロンプトは使えないので、どのフラグを渡すべきかをエラーで伝える。
 
-**If `--no-input` is passed, don’t prompt or do anything interactive.**
-This allows users an explicit way to disable all prompts in commands.
-If the command requires input, fail and tell the user how to pass the information as a flag.
+**`--no-input` が渡されたらプロンプトや対話を行わない。**
+ユーザーが明示的に対話を無効化できる。
+入力が必須なら失敗させ、フラグで渡す方法を教える。
 
-**If you’re prompting for a password, don’t print it as the user types.**
-This is done by turning off echo in the terminal.
-Your language should have helpers for this.
+**パスワード入力時は表示しない。**
+端末のエコーをオフにする。
+言語の補助機能を使う。
 
-**Let the user escape.**
-Make it clear how to get out.
-(Don’t do what vim does.)
-If your program hangs on network I/O etc, always make Ctrl-C still work.
-If it’s a wrapper around program execution where Ctrl-C can’t quit (SSH, tmux, telnet, etc), make it clear how to do that.
-For example, SSH allows escape sequences with the `~` escape character.
+**ユーザーが抜けられるようにする。**
+抜け方を明確にする。
+（vim のようにしない。）
+ネットワーク I/O などでハングしても Ctrl-C が必ず効くようにする。
+SSH/tmux/telnet のように Ctrl-C で抜けられないラッパーなら、抜け方を明確にする。
+例えば SSH は `~` エスケープシーケンスを持つ。
 
-### Subcommands
+### サブコマンド
 
-If you’ve got a tool that’s sufficiently complex, you can reduce its complexity by making a set of subcommands.
-If you have several tools that are very closely related, you can make them easier to use and discover by combining them into a single command (for example, RCS vs. Git).
+十分に複雑なツールなら、サブコマンドを使うことで複雑さを減らせる。
+非常に密接に関連する複数ツールがあるなら、単一コマンドに統合すると使いやすく発見もしやすい（例: RCS vs. Git）。
 
-They’re useful for sharing stuff—global flags, help text, configuration, storage mechanisms.
+サブコマンドは共有に向く——グローバルフラグ、ヘルプ、設定、ストレージ機構など。
 
-**Be consistent across subcommands.**
-Use the same flag names for the same things, have similar output formatting, etc.
+**サブコマンド間で一貫性を保つ。**
+同じ意味には同じフラグ名、出力フォーマットも揃える。
 
-**Use consistent names for multiple levels of subcommand.**
-If a complex piece of software has lots of objects and operations that can be performed on those objects, it is a common pattern to use two levels of subcommand for this, where one is a noun and one is a verb.
-For example, `docker container create`.
-Be consistent with the verbs you use across different types of objects.
+**複数レベルのサブコマンドは命名を揃える。**
+複雑なソフトで多数のオブジェクトと操作がある場合、「名詞 + 動詞」2階層が一般的。
+例: `docker container create`。
+異なるオブジェクト間で動詞を揃える。
 
-Either `noun verb` or `verb noun` ordering works, but `noun verb` seems to be more common.
+`名詞 動詞` でも `動詞 名詞` でも良いが、前者の方が一般的。
 
-_Further reading: [User experience, CLIs, and breaking the world, by John Starich](https://uxdesign.cc/user-experience-clis-and-breaking-the-world-baed8709244f)._
+_参考: [User experience, CLIs, and breaking the world, by John Starich](https://uxdesign.cc/user-experience-clis-and-breaking-the-world-baed8709244f)._ 
 
-**Don’t have ambiguous or similarly-named commands.**
-For example, having two subcommands called “update” and “upgrade” is quite confusing.
-You might want to use different words, or disambiguate with extra words.
+**曖昧または似た名前のコマンドを避ける。**
+例: “update” と “upgrade” の2つのサブコマンドは混乱を招く。
+別の言葉にするか、追加語で区別する。
 
-### Robustness {#robustness-guidelines}
+### 堅牢性 {#robustness-guidelines}
 
-**Validate user input.**
-Everywhere your program accepts data from the user, it will eventually be given bad data.
-Check early and bail out before anything bad happens, and [make the errors understandable](#errors).
+**ユーザー入力を検証する。**
+ユーザー入力は必ずいつか壊れる。
+早期にチェックして悪いことが起きる前に止め、[分かるエラー](#errors) にする。
 
-**Responsive is more important than fast.**
-Print something to the user in <100ms.
-If you’re making a network request, print something before you do it so it doesn’t hang and look broken.
+**速さより応答性。**
+100ms 以内にユーザーへ何か出す。
+ネットワークリクエストをするなら、実行前に何か出してハングに見えないようにする。
 
-**Show progress if something takes a long time.**
-If your program displays no output for a while, it will look broken.
-A good spinner or progress indicator can make a program appear to be faster than it is.
+**時間がかかるなら進捗を見せる。**
+しばらく出力がないと壊れて見える。
+良いスピナーや進捗表示は、実際より速く感じさせる。
 
-Ubuntu 20.04 has a nice progress bar that sticks to the bottom of the terminal.
+Ubuntu 20.04 には端末下部に貼り付く良いプログレスバーがある。
 
 <!-- (TK reproduce this as a code block or animated SVG) -->
 
-If the progress bar gets stuck in one place for a long time, the user won’t know if stuff is still happening or if the program’s crashed.
-It’s good to show estimated time remaining, or even just have an animated component, to reassure them that you’re still working on it.
+進捗バーが長時間止まると、処理が続いているのかクラッシュしたのか分からない。
+残り時間の推定や、少なくともアニメーションで「動作中」を示すと安心できる。
 
-There are many good libraries for generating progress bars.
-For example, [tqdm](https://github.com/tqdm/tqdm) for Python, [schollz/progressbar](https://github.com/schollz/progressbar) for Go, and [node-progress](https://github.com/visionmedia/node-progress) for Node.js.
+進捗バー生成には良いライブラリが多い。
+例: Python の [tqdm](https://github.com/tqdm/tqdm)、Go の [schollz/progressbar](https://github.com/schollz/progressbar)、Node.js の [node-progress](https://github.com/visionmedia/node-progress)。
 
-**Do stuff in parallel where you can, but be thoughtful about it.**
-It’s already difficult to report progress in the shell; doing it for parallel processes is ten times harder.
-Make sure it’s robust, and that the output isn’t confusingly interleaved.
-If you can use a library, do so—this is code you don’t want to write yourself.
-Libraries like [tqdm](https://github.com/tqdm/tqdm) for Python and [schollz/progressbar](https://github.com/schollz/progressbar) for Go support multiple progress bars natively.
+**並列化はできるなら行うが慎重に。**
+シェルで進捗を出すのは難しい。並列ならさらに難しい。
+堅牢で、出力が混ざって混乱しないようにする。
+ライブラリが使えるなら使う——自分で書きたくない種類のコード。
+Python の [tqdm](https://github.com/tqdm/tqdm) や Go の [schollz/progressbar](https://github.com/schollz/progressbar) は複数バーをネイティブに扱える。
 
-The upside is that it can be a huge usability gain.
-For example, `docker pull`’s multiple progress bars offer crucial insight into what’s going on.
+利点は大きく、例えば `docker pull` の複数バーは状況把握に役立つ:
 
 ```
 $ docker image pull ruby
@@ -963,84 +966,87 @@ b0efebc74f25: Downloading [===========================================>       ] 
 9cb1ba6838a0: Download complete
 ```
 
-One thing to be aware of: hiding logs behind progress bars when things go _well_ makes it much easier for the user to understand what’s going on, but if there is an error, make sure you print out the logs.
-Otherwise, it will be very hard to debug.
+注意点: 進捗バーの裏にログを隠すと、うまくいっている時は理解しやすいが、エラー時はログを必ず表示する。
+さもないとデバッグが非常に難しくなる。
 
-**Make things time out.**
-Allow network timeouts to be configured, and have a reasonable default so it doesn’t hang forever.
+**タイムアウトを設ける。**
+ネットワークタイムアウトは設定可能にし、妥当なデフォルトを持たせ、永遠にハングしないようにする。
 
-**Make it recoverable.**
-If the program fails for some transient reason (e.g. the internet connection went down), you should be able to hit `<up>` and `<enter>` and it should pick up from where it left off.
+**回復可能にする。**
+一時的な失敗（ネット接続が落ちた等）なら、`<up>` + `<enter>` で前回の続きから再開できるべき。
 
-**Make it crash-only.**
-This is the next step up from idempotence.
-If you can avoid needing to do any cleanup after operations, or you can defer that cleanup to the next run, your program can exit immediately on failure or interruption.
-This makes it both more robust and more responsive.
+**クラッシュオンリーにする。**
+冪等性の次の段階。
+失敗や割り込み後に後片付けが不要、または次回に回せるなら、即時終了できる。
+堅牢性と応答性の両方に効く。
 
-_Citation: [Crash-only software: More than meets the eye](https://lwn.net/Articles/191059/)._
+_引用: [Crash-only software: More than meets the eye](https://lwn.net/Articles/191059/)._ 
 
-**People are going to misuse your program.**
-Be prepared for that.
-They will wrap it in scripts, use it on bad internet connections, run many instances of it at once, and use it in environments you haven’t tested in, with quirks you didn’t anticipate.
-(Did you know macOS filesystems are case-insensitive but also case-preserving?)
+**人はプログラムを誤用する。**
+備えること。
+スクリプトに包まれ、劣悪なネット環境で使われ、同時に多重実行され、未知の環境で動かされる。
+（macOS のファイルシステムが大文字小文字を区別しないが保持はする、というのは知っている？）
 
-### Future-proofing {#future-proofing}
+### 将来互換 {#future-proofing}
 
-In software of any kind, it’s crucial that interfaces don’t change without a lengthy and well-documented deprecation process.
-Subcommands, arguments, flags, configuration files, environment variables: these are all interfaces, and you’re committing to keeping them working.
-([Semantic versioning](https://semver.org/) can only excuse so much change; if you’re putting out a major version bump every month, it’s meaningless.)
+ソフトウェアでは、長期かつ十分に文書化された非推奨プロセスなしにインターフェースを変えないことが重要。
+サブコマンド、引数、フラグ、設定ファイル、環境変数はすべてインターフェースであり、維持する責任がある。
+（[セマンティックバージョニング](https://semver.org/)でも、毎月メジャーアップするなら意味がない。）
 
-**Keep changes additive where you can.**
-Rather than modify the behavior of a flag in a backwards-incompatible way, maybe you can add a new flag—as long as it doesn’t bloat the interface too much.
-(See also: [Prefer flags to args](#arguments-and-flags).)
+**可能なら変更は追加的に。**
+既存フラグの振る舞いを互換性なく変えるより、新しいフラグを追加する。
+ただしインターフェースが膨らみすぎない範囲で。
+（[フラグを args より優先](#arguments-and-flags) も参照。）
 
-**Warn before you make a non-additive change.**
-Eventually, you’ll find that you can’t avoid breaking an interface.
-Before you do, forewarn your users in the program itself: when they pass the flag you’re looking to deprecate, tell them it’s going to change soon.
-Make sure there’s a way they can modify their usage today to make it future-proof, and tell them how to do it.
+**非追加的変更の前に警告する。**
+いずれ破壊的変更を避けられないことがある。
+その前にプログラム内で警告する。非推奨にするフラグが渡されたら、もうすぐ変わると伝える。
+今すぐ使い方を修正して将来互換にできる道を示し、方法を伝える。
 
-If possible, you should detect when they’ve changed their usage and not show the warning any more: now they won’t notice a thing when you finally roll out the change.
+可能なら、ユーザーが使い方を変えたことを検知し、警告を止める。
+そうすれば変更を出してもユーザーは気づかない。
 
-**Changing output for humans is usually OK.**
-The only way to make an interface easy to use is to iterate on it, and if the output is considered an interface, then you can’t iterate on it.
-Encourage your users to use `--plain` or `--json` in scripts to keep output stable (see [Output](#output)).
+**人間向け出力の変更は通常 OK。**
+インターフェースの改善には反復が必要で、出力がインターフェースだとすると改善できない。
+スクリプトでは `--plain` や `--json` を使って安定させるよう促す（[出力](#output)参照）。
 
-**Don’t have a catch-all subcommand.**
-If you have a subcommand that’s likely to be the most-used one, you might be tempted to let people omit it entirely for brevity’s sake.
-For example, say you have a `run` command that wraps an arbitrary shell command:
+**万能サブコマンドを作らない。**
+最も使われるサブコマンドを省略可能にしたくなることがある。
+例えば任意のシェルコマンドを実行する `run`:
 
     $ mycmd run echo "hello world"
 
-You could make it so that if the first argument to `mycmd` isn’t the name of an existing subcommand, you assume the user means `run`, so they can just type this:
+最初の引数が既存サブコマンド名でなければ `run` とみなすと、次のように短くできる:
 
     $ mycmd echo "hello world"
 
-This has a serious drawback, though: now you can never add a subcommand named `echo`—or _anything at all_—without risking breaking existing usages.
-If there’s a script out there that uses `mycmd echo`, it will do something entirely different after that user upgrades to the new version of your tool.
+しかし重大な欠点がある。
+`echo` というサブコマンドを将来追加できなくなる——_あらゆる_ サブコマンドが追加しづらくなる。
+`mycmd echo` を使うスクリプトがあれば、アップグレード後に別の動作になる。
 
-**Don’t allow arbitrary abbreviations of subcommands.**
-For example, say your command has an `install` subcommand.
-When you added it, you wanted to save users some typing, so you allowed them to type any non-ambiguous prefix, like `mycmd ins`, or even just `mycmd i`, and have it be an alias for `mycmd install`.
-Now you’re stuck: you can’t add any more commands beginning with `i`, because there are scripts out there that assume `i` means `install`.
+**サブコマンドの任意省略を許さない。**
+例えば `install` サブコマンドがあり、非曖昧な接頭辞なら `mycmd ins` や `mycmd i` でも許可するとする。
+これで `i` で始まるサブコマンドを将来追加できなくなる。
+`i` が `install` を意味すると期待するスクリプトが存在するため。
 
-There’s nothing wrong with aliases—saving on typing is good—but they should be explicit and remain stable.
+エイリアス自体は悪くないが、明示的で安定しているべき。
 
-**Don’t create a “time bomb.”**
-Imagine it’s 20 years from now.
-Will your command still run the same as it does today, or will it stop working because some external dependency on the internet has changed or is no longer maintained?
-The server most likely to not exist in 20 years is the one that you are maintaining right now.
-(But don’t build in a blocking call to Google Analytics either.)
+**「時限爆弾」を作らない。**
+20年後を想像してほしい。
+今と同じように動くか、外部依存が変化/消滅して動かなくなるか？
+20年後に存在しない可能性が高いサーバーは、今あなたが運用しているサーバーだ。
+（ただし Google Analytics へのブロッキング呼び出しを埋め込むのも避ける。）
 
-### Signals and control characters {#signals}
+### シグナルと制御文字 {#signals}
 
-**If a user hits Ctrl-C (the INT signal), exit as soon as possible.**
-Say something immediately, before you start clean-up.
-Add a timeout to any clean-up code so it can’t hang forever.
+**ユーザーが Ctrl-C（INT）を押したら、できるだけ早く終了する。**
+クリーンアップ開始前に即座に何かを表示する。
+クリーンアップにはタイムアウトを付け、永遠にハングしないようにする。
 
-**If a user hits Ctrl-C during clean-up operations that might take a long time, skip them.**
-Tell the user what will happen when they hit Ctrl-C again, in case it is a destructive action.
+**時間のかかるクリーンアップ中に Ctrl-C が押されたらスキップする。**
+2回目の Ctrl-C で何が起こるか（破壊的なら）を伝える。
 
-For example, when quitting Docker Compose, you can hit Ctrl-C a second time to force your containers to stop immediately instead of shutting them down gracefully.
+例: Docker Compose を終了するとき、2回目の Ctrl-C で即停止する:
 
 ```
 $  docker-compose up
@@ -1048,200 +1054,202 @@ $  docker-compose up
 ^CGracefully stopping... (press Ctrl+C again to force)
 ```
 
-Your program should expect to be started in a situation where clean-up has not been run.
-(See [Crash-only software: More than meets the eye](https://lwn.net/Articles/191059/).)
+プログラムはクリーンアップが走っていない状態で起動される可能性を想定すべき。
+（[Crash-only software: More than meets the eye](https://lwn.net/Articles/191059/) 参照。）
 
-### Configuration {#configuration}
+### 設定 {#configuration}
 
-Command-line tools have lots of different types of configuration, and lots of different ways to supply it (flags, environment variables, project-level config files).
-The best way to supply each piece of configuration depends on a few factors, chief among them _specificity_, _stability_ and _complexity_.
+コマンドラインツールには多様な設定タイプがあり、供給方法も多い（フラグ、環境変数、プロジェクト設定ファイル）。
+各設定の最適な供給方法は、特に _特異性_・_安定性_・_複雑性_ に依存する。
 
-Configuration generally falls into a few categories:
+設定は一般に以下のカテゴリに分かれる:
 
-1.  Likely to vary from one invocation of the command to the next.
+1.  コマンド実行ごとに変わりやすい。
 
-    Examples:
-    - Setting the level of debugging output
-    - Enabling a safe mode or dry run of a program
+    例:
+    - デバッグ出力レベルの設定
+    - セーフモードやドライランの有効化
 
-    Recommendation: **Use [flags](#arguments-and-flags).**
-    [Environment variables](#environment-variables) may or may not be useful as well.
+    推奨: **[フラグ](#arguments-and-flags) を使う。**
+    [環境変数](#environment-variables) も使える場合がある。
 
-2.  Generally stable from one invocation to the next, but not always.
-    Might vary between projects.
-    Definitely varies between different users working on the same project.
+2.  実行ごとには概ね安定だが常に同じではない。
+    プロジェクト間で変わる可能性がある。
+    同じプロジェクト内でもユーザー間で違う。
 
-    This type of configuration is often specific to an individual computer.
+    これは多くの場合、個々のコンピュータ固有の設定。
 
-    Examples:
-    - Providing a non-default path to items needed for a program to start
-    - Specifying how or whether color should appear in output
-    - Specifying an HTTP proxy server to route all requests through
+    例:
+    - 起動に必要な項目の非デフォルトパス
+    - 出力の色の有無
+    - HTTP プロキシ設定
 
-    Recommendation: **Use [flags](#arguments-and-flags) and probably [environment variables](#environment-variables) too.**
-    Users may want to set the variables in their shell profile so they apply globally, or in `.env` for a particular project.
+    推奨: **[フラグ](#arguments-and-flags) とおそらく [環境変数](#environment-variables) も使う。**
+    ユーザーはシェルプロフィールに設定して全体適用したり、プロジェクトごとの `.env` に設定したりする。
 
-    If this configuration is sufficiently complex, it may warrant a configuration file of its own, but environment variables are usually good enough.
+    複雑なら専用設定ファイルにしてもよいが、通常は環境変数で十分。
 
-3.  Stable within a project, for all users.
+3.  プロジェクト内で安定し、全ユーザーで同じ。
 
-    This is the type of configuration that belongs in version control.
-    Files like `Makefile`, `package.json` and `docker-compose.yml` are all examples of this.
+    バージョン管理に入るべき設定。
+    `Makefile`、`package.json`、`docker-compose.yml` などが例。
 
-    Recommendation: **Use a command-specific, version-controlled file.**
+    推奨: **コマンド専用のバージョン管理ファイルを使う。**
 
-**Follow the XDG-spec.**
-In 2010 the X Desktop Group, now [freedesktop.org](https://freedesktop.org), developed a specification for the location of base directories where config files may be located.
-One goal was to limit the proliferation of dotfiles in a user’s home directory by supporting a general-purpose `~/.config` folder.
-The XDG Base Directory Specification ([full spec](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html), [summary](https://wiki.archlinux.org/index.php/XDG_Base_Directory#Specification)) is supported by yarn, fish, wireshark, emacs, neovim, tmux, and many other projects you know and love.
+**XDG 仕様に従う。**
+2010年に X Desktop Group（現 [freedesktop.org](https://freedesktop.org)）は設定ファイルのベースディレクトリの仕様を作った。
+目的の一つはホームディレクトリの dotfile 増殖を抑え、`~/.config` を一般的に使うこと。
+XDG Base Directory Specification（[仕様](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)、[要約](https://wiki.archlinux.org/index.php/XDG_Base_Directory#Specification)）は yarn, fish, wireshark, emacs, neovim, tmux など多くのプロジェクトで使われている。
 
-**If you automatically modify configuration that is not your program’s, ask the user for consent and tell them exactly what you’re doing.**
-Prefer creating a new config file (e.g. `/etc/cron.d/myapp`) rather than appending to an existing config file (e.g. `/etc/crontab`).
-If you have to append or modify to a system-wide config file, use a dated comment in that file to delineate your additions.
+**自分のプログラム以外の設定を自動変更するなら、必ず同意を取り、何をしているか正確に伝える。**
+既存ファイルへの追記（例: `/etc/crontab`）より、新しい設定ファイル作成（例: `/etc/cron.d/myapp`）を優先。
+システム全体の設定ファイルに追記/変更する必要があるなら、日付入りコメントで自分の変更箇所を区切る。
 
-**Apply configuration parameters in order of precedence.**
-Here is the precedence for config parameters, from highest to lowest:
+**設定の適用順序を守る。**
+優先順位は以下（高い→低い）:
 
-- Flags
-- The running shell’s environment variables
-- Project-level configuration (e.g. `.env`)
-- User-level configuration
-- System wide configuration
+- フラグ
+- 実行シェルの環境変数
+- プロジェクトレベル設定（例: `.env`）
+- ユーザーレベル設定
+- システム全体設定
 
-### Environment variables {#environment-variables}
+### 環境変数 {#environment-variables}
 
-**Environment variables are for behavior that _varies with the context_ in which a command is run.**
-The “environment” of an environment variable is the terminal session—the context in which the command is running.
-So, an env var might change each time a command runs, or between terminal sessions on one machine, or between instantiations of one project across several machines.
+**環境変数は「実行コンテキストで変わる振る舞い」のためのもの。**
+環境変数の「環境」とは端末セッション、つまりコマンド実行の文脈。
+従って env var は実行ごとに変わるか、同一マシンのセッション間で変わるか、複数マシンのプロジェクト間で変わり得る。
 
-Environment variables may duplicate the functionality of flags or configuration parameters, or they may be distinct from those things.
-See [Configuration](#configuration) for a breakdown of common types of configuration and recommendations on when environment variables are most appropriate.
+環境変数はフラグや設定パラメータと重複する場合もあれば、独立する場合もある。
+[設定](#configuration) で使い分けの指針を示す。
 
-**For maximum portability, environment variable names must only contain uppercase letters, numbers, and underscores (and mustn't start with a number).**
-Which means `O_O` and `OWO` are the only emoticons that are also valid environment variable names.
+**可搬性最大化のため、環境変数名は大文字・数字・アンダースコアのみ（先頭は数字不可）。**
+つまり `O_O` と `OWO` だけが有効な顔文字。
 
-**Aim for single-line environment variable values.**
-While multi-line values are possible, they create usability issues with the `env` command.
+**環境変数の値は1行を目指す。**
+複数行も可能だが `env` コマンドの扱いが悪化する。
 
-**Avoid commandeering widely used names.**
-Here’s a [list of POSIX standard env vars](https://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap08.html).
+**一般的に使われる名前を横取りしない。**
+POSIX 標準の env var 一覧は[ここ](https://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap08.html)。
 
-**Check general-purpose environment variables for configuration values when possible:**
+**可能なら汎用環境変数を使う。**
 
-- `NO_COLOR`, to disable color (see [Output](#output)) or `FORCE_COLOR` to enable it and ignore the detection logic
-- `DEBUG`, to enable more verbose output
-- `EDITOR`, if you need to prompt the user to edit a file or input more than a single line
-- `HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY` and `NO_PROXY`, if you’re going to perform network operations
-  (The HTTP library you’re using might already check for these.)
-- `SHELL`, if you need to open up an interactive session of the user's preferred shell
-  (If you need to execute a shell script, use a specific interpreter like `/bin/sh`)
-- `TERM`, `TERMINFO` and `TERMCAP`, if you’re going to use terminal-specific escape sequences
-- `TMPDIR`, if you’re going to create temporary files
-- `HOME`, for locating configuration files
-- `PAGER`, if you want to automatically page output
-- `LINES` and `COLUMNS`, for output that’s dependent on screen size (e.g. tables)
+- `NO_COLOR`: 色無効化（[出力](#output) 参照）。`FORCE_COLOR` は色強制。
+- `DEBUG`: より冗長な出力。
+- `EDITOR`: ファイル編集や複数行入力を促す場合。
+- `HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY`, `NO_PROXY`: ネットワーク操作がある場合。
+  （HTTP ライブラリが既に参照している場合もある。）
+- `SHELL`: ユーザーの好みのシェルで対話セッションを開く場合。
+  （シェルスクリプト実行なら `/bin/sh` のような特定インタプリタを使う。）
+- `TERM`, `TERMINFO`, `TERMCAP`: 端末依存のエスケープシーケンスを使う場合。
+- `TMPDIR`: 一時ファイルを作る場合。
+- `HOME`: 設定ファイルの場所を探す場合。
+- `PAGER`: 出力をページングしたい場合。
+- `LINES`, `COLUMNS`: 画面サイズに依存する出力（例: テーブル）。
 
-**Read environment variables from `.env` where appropriate.**
-If a command defines environment variables that are unlikely to change as long as the user is working in a particular directory,
-then it should also read them from a local `.env` file so users can configure it differently for different projects without having to specify them every time.
-Many languages have libraries for reading `.env` files ([Rust](https://crates.io/crates/dotenv), [Node](https://www.npmjs.com/package/dotenv), [Ruby](https://github.com/bkeepers/dotenv)).
+**適切なら `.env` から環境変数を読む。**
+特定ディレクトリでの作業中に変わりにくい環境変数があるなら、ローカル `.env` を読んでプロジェクトごとに設定できるようにする。
+多くの言語に `.env` 読み込みライブラリがある（[Rust](https://crates.io/crates/dotenv), [Node](https://www.npmjs.com/package/dotenv), [Ruby](https://github.com/bkeepers/dotenv)）。
 
-**Don’t use `.env` as a substitute for a proper [configuration file](#configuration).**
-`.env` files have a lot of limitations:
+**`.env` を正式な[設定ファイル](#configuration)の代替にしない。**
+`.env` には制約が多い:
 
-- A `.env` file is not commonly stored in source control
-- (Therefore, any configuration stored in it has no history)
-- It has only one data type: string
-- It lends itself to being poorly organized
-- It makes encoding issues easy to introduce
-- It often contains sensitive credentials & key material that would be better stored more securely
+- `.env` は一般にソース管理されない
+- （よって設定履歴が残らない）
+- データ型が文字列しかない
+- 整理されにくい
+- 文字エンコーディング問題を起こしやすい
+- 機密情報や鍵素材が入りがちで、本来はより安全に保管すべき
 
-If it seems like these limitations will hamper usability or security, then a dedicated config file might be more appropriate.
+これらが使いやすさや安全性を阻害しそうなら、専用設定ファイルのほうが適切。
 
-**Do not read secrets from environment variables.**
-While environment variables may be convenient for storing secrets, they have proven too prone to leakage:
+**秘密情報を環境変数から読まない。**
+環境変数は便利だが漏洩しやすいことが実証されている:
 
-- Exported environment variables are sent to every process, and from there can easily leak into logs or be exfiltrated
-- Shell substitutions like `curl -H "Authorization: Bearer $BEARER_TOKEN"` will leak into globally-readable process state.
-  (cURL offers the `-H @filename` alternative for reading sensitive headers from a file.)
-- Docker container environment variables can be viewed by anyone with Docker daemon access via `docker inspect`
-- Environment variables in systemd units are globally readable via `systemctl show`
+- export された環境変数は全プロセスへ渡り、ログに漏れたり流出しやすい
+- `curl -H "Authorization: Bearer $BEARER_TOKEN"` のようなシェル展開はプロセス情報に漏れる
+  （cURL は `-H @filename` でファイルから安全に読み込める）
+- Docker コンテナの環境変数は `docker inspect` で閲覧できる
+- systemd ユニットの環境変数は `systemctl show` で読める
 
-Secrets should only be accepted via credential files, pipes, `AF_UNIX` sockets, secret management services, or another IPC mechanism.
+秘密は資格情報ファイル、パイプ、`AF_UNIX` ソケット、秘密管理サービス、その他の IPC で受け取るべき。
 
-### Naming {#naming}
+### 命名 {#naming}
 
 > “Note the obsessive use of abbreviations and avoidance of capital letters; [Unix] is a system invented by people to whom repetitive stress disorder is what black lung is to miners.
 > Long names get worn down to three-letter nubbins, like stones smoothed by a river.”
 > — Neal Stephenson, _[In the Beginning was the Command Line](https://web.stanford.edu/class/cs81n/command.txt)_
 
-The name of your program is particularly important on the CLI: your users will be typing it all the time, and it needs to be easy to remember and type.
+プログラム名は CLI では特に重要だ。ユーザーはそれを何度もタイプするので、覚えやすく打ちやすくあるべき。
 
-**Make it a simple, memorable word.**
-But not too generic, or you’ll step on the toes of other commands and confuse users.
-For example, both ImageMagick and Windows used the command `convert`.
+**シンプルで覚えやすい単語にする。**
+ただし一般的すぎると他コマンドと衝突し混乱する。
+例: ImageMagick と Windows の両方が `convert` を使っていた。
 
-**Use only lowercase letters, and dashes if you really need to.**
-`curl` is a good name, `DownloadURL` is not.
+**小文字のみを使い、必要ならダッシュを使う。**
+`curl` は良いが `DownloadURL` は良くない。
 
-**Keep it short.**
-Users will be typing it all the time.
-Don’t make it _too_ short: the very shortest commands are best reserved for the common utilities used all the time, such as `cd`, `ls`, `ps`.
+**短くする。**
+ユーザーは頻繁にタイプする。
+ただし _短すぎる_ のは避ける。最短の名前は `cd`, `ls`, `ps` など日常的なユーティリティに温存すべき。
 
-**Make it easy to type.**
-If you expect people to type your command name all day, make it easy on their hands.
+**打ちやすくする。**
+一日中タイプされるなら、指に優しい名前にする。
 
-A real-world example: long before Docker Compose was `docker compose`, it was [`plum`](https://github.com/aanand/fig/blob/0eb7d308615bae1ad4be1ca5112ac7b6b6cbfbaf/setup.py#L26).
-This turned out to be such an awkward, one-handed hopscotch that it was immediately renamed to [`fig`](https://github.com/aanand/fig/commit/0cafdc9c6c19dab2ef2795979dc8b2f48f623379), which – as well as being shorter – flows much more easily.
+実例: Docker Compose が `docker compose` になる前は [`plum`](https://github.com/aanand/fig/blob/0eb7d308615bae1ad4be1ca5112ac7b6b6cbfbaf/setup.py#L26) だった。
+片手では厳しい綱渡りのような名前で、すぐに [`fig`](https://github.com/aanand/fig/commit/0cafdc9c6c19dab2ef2795979dc8b2f48f623379) に改名された。
+短く、流れるように打てる。
 
-_Further reading: [The Poetics of CLI Command Names](https://smallstep.com/blog/the-poetics-of-cli-command-names/)_
+_参考: [The Poetics of CLI Command Names](https://smallstep.com/blog/the-poetics-of-cli-command-names/)_
 
-### Distribution {#distribution}
+### 配布 {#distribution}
 
-**If possible, distribute as a single binary.**
-If your language doesn’t compile to binary executables as standard, see if it has something like [PyInstaller](https://www.pyinstaller.org/).
-If you really can’t distribute as a single binary, use the platform’s native package installer so you aren’t scattering things on disk that can’t easily be removed.
-Tread lightly on the user’s computer.
+**可能なら単一バイナリで配布する。**
+言語が標準でバイナリ生成しないなら、[PyInstaller](https://www.pyinstaller.org/) のようなものがないか検討する。
+どうしても単一バイナリが無理なら、プラットフォーム標準のパッケージインストーラを使い、簡単に削除できないファイルを散乱させない。
+ユーザーのコンピュータへの侵入は最小限に。
 
-If you’re making a language-specific tool, such as a code linter, then this rule doesn’t apply—it’s safe to assume the user has an interpreter for that language installed on their computer.
+言語固有のツール（例: コードリンタ）ならこのルールは当てはまらない。
+その言語のインタプリタが入っている前提でよい。
 
-**Make it easy to uninstall.**
-If it needs instructions, put them at the bottom of the install instructions—one of the most common times people want to uninstall software is right after installing it.
+**アンインストールを簡単にする。**
+手順が必要なら、インストール手順の末尾に書く。
+インストール直後はアンインストールしたくなることが最も多い。
 
-### Analytics {#analytics}
+### アナリティクス {#analytics}
 
-Usage metrics can be helpful to understand how users are using your program, how to make it better, and where to focus effort.
-But, unlike websites, users of the command-line expect to be in control of their environment, and it is surprising when programs do things in the background without telling them.
+利用状況メトリクスは、ユーザーがどう使っているか、改善点、注力すべき領域の理解に役立つ。
+しかし Web と違い、コマンドラインのユーザーは環境の制御を期待しており、裏で勝手に通信されると驚く。
 
-**Do not phone home usage or crash data without consent.**
-Users will find out, and they will be angry.
-Be very explicit about what you collect, why you collect it, how anonymous it is and how you go about anonymizing it, and how long you retain it for.
+**同意なしに使用状況やクラッシュデータを送信しない。**
+ユーザーは必ず気づき、怒る。
+収集する内容、理由、匿名化の方法、保持期間を明示する。
 
-Ideally, ask users whether they want to contribute data (“opt-in”).
-If you choose to do it by default (“opt-out”), then clearly tell users about it on your website or first run, and make it easy to disable.
+理想は「オプトイン」。
+デフォルトで収集（オプトアウト）にするなら、Web サイトや初回起動で明確に伝え、無効化を簡単にする。
 
-Examples of projects that collect usage statistics:
+利用統計を収集するプロジェクト例:
 
-- Angular.js [collects detailed analytics using Google Analytics](https://angular.io/analytics), in the name of feature prioritization.
-  You have to explicitly opt in.
-  You can change the tracking ID to point to your own Google Analytics property if you want to track Angular usage inside your organization.
-- Homebrew sends metrics to Google Analytics and has [a nice FAQ](https://docs.brew.sh/Analytics) detailing their practices.
-- Next.js [collects anonymized usage statistics](https://nextjs.org/telemetry) and is enabled by default.
+- Angular.js は機能優先順位付けのために Google Analytics で詳細分析を収集。
+  明示的なオプトインが必要。
+  組織内で使う場合は追跡 ID を自分の Google Analytics に変えられる。
+- Homebrew は Google Analytics にメトリクスを送信し、実践を詳述した [FAQ](https://docs.brew.sh/Analytics) がある。
+- Next.js は匿名化された利用統計を収集し、デフォルトで有効。
 
-**Consider alternatives to collecting analytics.**
+**アナリティクス収集の代替を検討する。**
 
-- Instrument your web docs.
-  If you want to know how people are using your CLI tool, make a set of docs around the use cases you’d like to understand best, and see how they perform over time.
-  Look at what people search for within your docs.
-- Instrument your downloads.
-  This can be a rough metric to understand usage and what operating systems your users are running.
-- Talk to your users.
-  Reach out and ask people how they’re using your tool.
-  Encourage feedback and feature requests in your docs and repos, and try to draw out more context from those who submit feedback.
+- Web ドキュメントを計測する。
+  CLI ツールの使われ方を知りたいなら、知りたいユースケース中心のドキュメントを作り、その推移を見る。
+  ドキュメント内の検索語を調べる。
+- ダウンロードを計測する。
+  利用量や OS の把握の荒い指標になる。
+- ユーザーと話す。
+  どう使っているか尋ねる。
+  フィードバックや機能要望を docs や repo で促し、提出者から文脈を引き出す。
 
-_Further reading: [Open Source Metrics](https://opensource.guide/metrics/)_
+_参考: [Open Source Metrics](https://opensource.guide/metrics/)_
 
-## Further reading
+## 参考文献
 
 - [The Unix Programming Environment](https://en.wikipedia.org/wiki/The_Unix_Programming_Environment), Brian W. Kernighan and Rob Pike
 - [POSIX Utility Conventions](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html)
