@@ -1,3 +1,8 @@
+---
+name: architecture
+description: github-kanri アーキテクチャ設計書。目的/構成/データフロー/運用方針を整理。
+---
+
 # アーキテクチャ設計書
 
 ## 背景

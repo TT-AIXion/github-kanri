@@ -1,3 +1,8 @@
+---
+name: functional-design
+description: github-kanri 機能設計書。目的/機能要件/フロー/例外/受け入れ基準。
+---
+
 # 機能設計書
 
 ## 目的と範囲

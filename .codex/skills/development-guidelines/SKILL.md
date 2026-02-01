@@ -1,3 +1,8 @@
+---
+name: development-guidelines
+description: github-kanri 開発ガイドライン。コーディング規約/運用/テスト/レビュー方針。
+---
+
 # 開発ガイドライン
 
 ## コーディング規約

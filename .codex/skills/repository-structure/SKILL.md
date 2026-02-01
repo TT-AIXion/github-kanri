@@ -1,3 +1,8 @@
+---
+name: repository-structure
+description: github-kanri リポジトリ構造。トップレベル/主要ディレクトリ/ビルド情報。
+---
+
 # リポジトリ構造
 
 ## トップレベル構成

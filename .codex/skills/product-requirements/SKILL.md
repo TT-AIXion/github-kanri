@@ -1,3 +1,8 @@
+---
+name: product-requirements
+description: github-kanri プロダクト要求定義書。背景/目的/要件/非ゴール/指標。
+---
+
 # プロダクト要求定義書
 
 ## 背景/課題
