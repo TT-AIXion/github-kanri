@@ -1,6 +1,10 @@
 package match
 
-import "testing"
+import (
+	"errors"
+	"regexp"
+	"testing"
+)
 
 func TestMatch(t *testing.T) {
 	cases := []struct {
@@ -29,5 +33,29 @@ func TestAny(t *testing.T) {
 	}
 	if Any(patterns, "baz") {
 		t.Fatalf("Any should not match")
+	}
+}
+
+func TestMatchCommand(t *testing.T) {
+	if !MatchCommand("code *", "code /tmp/path") {
+		t.Fatalf("expected command match")
+	}
+	if AnyCommand([]string{"git status*"}, "git status --porcelain") == false {
+		t.Fatalf("expected AnyCommand match")
+	}
+}
+
+func TestMatchCompileError(t *testing.T) {
+	orig := compileRegexp
+	compileRegexp = func(string) (*regexp.Regexp, error) { return nil, errors.New("bad") }
+	defer func() { compileRegexp = orig }()
+	if Match("foo", "foo") == false {
+		t.Fatalf("expected direct match")
+	}
+	if Match("foo*", "bar") {
+		t.Fatalf("expected false on compile error")
+	}
+	if MatchCommand("foo*", "bar") {
+		t.Fatalf("expected false on compile error")
 	}
 }

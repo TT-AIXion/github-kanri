@@ -185,8 +185,8 @@ func (a App) runRepoGraph(ctx context.Context, args []string) int {
 	runner := buildRunner(cfg, false)
 	log, err := gitutil.LogOneline(ctx, runner, selected.Path, *limit)
 	if err != nil {
-		a.Out.Err(err.Error(), nil)
-		return 1
+		a.Out.Warn("no commits", nil)
+		return 0
 	}
 	if a.Out.JSON {
 		a.Out.OK("repo graph", map[string]string{"name": selected.Name, "log": log})

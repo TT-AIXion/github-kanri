@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+var userHomeDir = os.UserHomeDir
+
+func SetUserHomeDirForTest(fn func() (string, error)) {
+	userHomeDir = fn
+}
+
+func ResetUserHomeDirForTest() {
+	userHomeDir = os.UserHomeDir
+}
+
 type Config struct {
 	ProjectsRoot   string       `json:"projectsRoot"`
 	ReposRoot      string       `json:"reposRoot"`
@@ -32,7 +42,7 @@ type SyncTarget struct {
 }
 
 func DefaultConfigPath() (string, error) {
-	home, err := os.UserHomeDir()
+	home, err := userHomeDir()
 	if err != nil {
 		return "", err
 	}
@@ -150,7 +160,7 @@ func ExpandPath(p string) (string, error) {
 		return "", nil
 	}
 	if strings.HasPrefix(p, "~") {
-		home, err := os.UserHomeDir()
+		home, err := userHomeDir()
 		if err != nil {
 			return "", err
 		}

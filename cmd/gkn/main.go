@@ -9,12 +9,17 @@ import (
 )
 
 var Version = "dev"
+var exitFunc = os.Exit
 
 func main() {
+	exitFunc(runMain(os.Args[1:]))
+}
+
+func runMain(args []string) int {
 	ctx := context.Background()
-	jsonMode, args := consumeJSONFlag(os.Args[1:])
+	jsonMode, args := consumeJSONFlag(args)
 	application := app.App{Version: Version, Out: output.New(jsonMode)}
-	os.Exit(application.Run(ctx, args))
+	return application.Run(ctx, args)
 }
 
 func consumeJSONFlag(args []string) (bool, []string) {

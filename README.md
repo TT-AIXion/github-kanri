@@ -16,6 +16,10 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 - `go build -o gkn ./cmd/gkn`
 
+## 品質チェック
+
+- `scripts/quality.sh` (go vet + go test coverage)
+
 ## 設定
 
 - 例: `~/.config/github-kanri/config.json`

@@ -15,13 +15,13 @@ type Guard struct {
 }
 
 func (g Guard) CheckCommand(command string) error {
-	if match.Any(g.DenyCommands, command) {
+	if match.AnyCommand(g.DenyCommands, command) {
 		return fmt.Errorf("deny command: %s", command)
 	}
 	if len(g.AllowCommands) == 0 {
 		return nil
 	}
-	if match.Any(g.AllowCommands, command) {
+	if match.AnyCommand(g.AllowCommands, command) {
 		return nil
 	}
 	return fmt.Errorf("command not allowed: %s", command)

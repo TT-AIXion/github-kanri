@@ -34,7 +34,7 @@ func DefaultBranch(ctx context.Context, r executil.Runner, repo string) (string,
 	}
 	out := strings.TrimSpace(res.Stdout)
 	parts := strings.Split(out, "/")
-	if len(parts) == 0 {
+	if len(parts) == 0 || parts[len(parts)-1] == "" {
 		return "", fmt.Errorf("unexpected origin HEAD")
 	}
 	return parts[len(parts)-1], nil
