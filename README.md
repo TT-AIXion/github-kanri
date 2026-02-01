@@ -14,18 +14,20 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 ## インストール（暫定）
 
-- Go でビルドして配置予定（後続で記載）
+- `go build -o gkn ./cmd/gkn`
 
 ## 設定
 
 - 例: `~/.config/github-kanri/config.json`
 - 1 箇所のみを参照
+- `skillsRemote` は `gkn skills clone --remote` で上書き可
 
 ```json
 {
   "projectsRoot": "~/Projects",
   "reposRoot": "~/Projects/repos",
   "skillsRoot": "~/Projects/skills",
+  "skillsRemote": "git@github.com:org/skills.git",
   "skillTargets": [".codex/skills", ".claude/skills"],
   "syncTargets": [
     {

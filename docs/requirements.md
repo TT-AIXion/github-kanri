@@ -46,6 +46,7 @@
 ### 2. Skills/Sync 管理
 
 - skills クローン: 設定されたリモートから `~/Projects/skills/` にクローン
+- skills リモート: `skillsRemote`（または `skills clone --remote`）で指定
 - skills 更新: `git fetch/pull` で更新
 - 配布先生成: `.codex/skills/`, `.claude/skills/` 等の既知ディレクトリを作成
 - 配布方式: 既定は `copy`（安全: 衝突時は fail）
@@ -148,6 +149,7 @@
   "projectsRoot": "~/Projects",
   "reposRoot": "~/Projects/repos",
   "skillsRoot": "~/Projects/skills",
+  "skillsRemote": "git@github.com:org/skills.git",
   "skillTargets": [".codex/skills", ".claude/skills"],
   "syncTargets": [
     {
