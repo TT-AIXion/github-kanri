@@ -9,6 +9,8 @@ import (
 	"github.com/AIXion-Team/github-kanri/internal/config"
 )
 
+var defaultConfig = config.DefaultConfig
+
 func (a App) runConfig(ctx context.Context, args []string) int {
 	if len(args) == 0 || isHelp(args[0]) {
 		a.Out.Raw(`gkn config <command>
@@ -70,7 +72,7 @@ func (a App) runConfigInit(_ context.Context, args []string) int {
 		a.Out.Err("config already exists (use --force)", nil)
 		return 1
 	}
-	cfg, err := config.DefaultConfig()
+	cfg, err := defaultConfig()
 	if err != nil {
 		a.Out.Err(err.Error(), nil)
 		return 1

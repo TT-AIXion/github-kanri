@@ -110,6 +110,39 @@ func TestDefaultBranchEmpty(t *testing.T) {
 	_, _ = DefaultBranch(context.Background(), runner, repoPath)
 }
 
+func TestIsCleanError(t *testing.T) {
+	runner := executil.Runner{Guard: safety.Guard{AllowCommands: []string{"git log*"}}}
+	if _, err := IsClean(context.Background(), runner, t.TempDir()); err == nil {
+		t.Fatalf("expected IsClean error")
+	}
+}
+
+func TestLastCommitUnixError(t *testing.T) {
+	runner := executil.Runner{Guard: safety.Guard{AllowCommands: []string{"git status*"}}}
+	if _, err := LastCommitUnix(context.Background(), runner, t.TempDir()); err == nil {
+		t.Fatalf("expected LastCommitUnix error")
+	}
+}
+
+func TestDefaultBranchCommandError(t *testing.T) {
+	runner := executil.Runner{Guard: safety.Guard{AllowCommands: []string{"git status*"}}}
+	if _, err := DefaultBranch(context.Background(), runner, t.TempDir()); err == nil {
+		t.Fatalf("expected DefaultBranch error")
+	}
+}
+
+func TestDefaultBranchUnexpected(t *testing.T) {
+	orig := symbolicRef
+	symbolicRef = func(context.Context, executil.Runner, string) (executil.Result, error) {
+		return executil.Result{Stdout: "refs/remotes/origin/"}, nil
+	}
+	defer func() { symbolicRef = orig }()
+	runner := executil.Runner{Guard: safety.Guard{AllowCommands: []string{"*"}}}
+	if _, err := DefaultBranch(context.Background(), runner, ""); err == nil {
+		t.Fatalf("expected unexpected origin HEAD error")
+	}
+}
+
 func runGit(dir string, args ...string) error {
 	cmd := exec.Command("git", args...)
 	cmd.Dir = dir

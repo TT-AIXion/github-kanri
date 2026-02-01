@@ -9,6 +9,10 @@ import (
 	"github.com/AIXion-Team/github-kanri/internal/executil"
 )
 
+var symbolicRef = func(ctx context.Context, r executil.Runner, repo string) (executil.Result, error) {
+	return r.Run(ctx, repo, "git", "symbolic-ref", "refs/remotes/origin/HEAD")
+}
+
 func StatusPorcelain(ctx context.Context, r executil.Runner, repo string) (string, error) {
 	res, err := r.Run(ctx, repo, "git", "status", "--porcelain")
 	return strings.TrimSpace(res.Stdout), err
@@ -28,7 +32,7 @@ func CurrentBranch(ctx context.Context, r executil.Runner, repo string) (string,
 }
 
 func DefaultBranch(ctx context.Context, r executil.Runner, repo string) (string, error) {
-	res, err := r.Run(ctx, repo, "git", "symbolic-ref", "refs/remotes/origin/HEAD")
+	res, err := symbolicRef(ctx, r, repo)
 	if err != nil {
 		return "", err
 	}

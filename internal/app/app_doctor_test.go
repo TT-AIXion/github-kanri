@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/AIXion-Team/github-kanri/internal/config"
+	"github.com/AIXion-Team/github-kanri/internal/output"
 )
 
 func TestDoctor(t *testing.T) {
@@ -39,4 +40,77 @@ func TestDoctorNoGit(t *testing.T) {
 		t.Fatalf("expected doctor error")
 	}
 	t.Setenv("PATH", orig)
+}
+
+func TestDoctorParseError(t *testing.T) {
+	app, _ := newTestApp(t)
+	if code := app.runDoctor(context.Background(), []string{"--bad"}); code == 0 {
+		t.Fatalf("expected doctor parse error")
+	}
+}
+
+func TestDoctorExpandError(t *testing.T) {
+	home := t.TempDir()
+	config.SetUserHomeDirForTest(func() (string, error) { return home, nil })
+	path, err := config.DefaultConfigPath()
+	if err != nil {
+		t.Fatalf("path error: %v", err)
+	}
+	cfg := config.Config{
+		ProjectsRoot: "~/Projects",
+		ReposRoot:    "~/Projects/repos",
+		SkillsRoot:   "~/Projects/skills",
+		SkillTargets: []string{".codex/skills"},
+		SyncTargets: []config.SyncTarget{{
+			Name: "skills",
+			Src:  "~/Projects/skills",
+			Dest: []string{".codex/skills"},
+		}},
+		SyncMode:       "copy",
+		ConflictPolicy: "fail",
+		DenyCommands:   []string{"rm -rf*"},
+	}
+	if err := config.Save(path, cfg); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	calls := 0
+	config.SetUserHomeDirForTest(func() (string, error) {
+		calls++
+		if calls == 1 {
+			return home, nil
+		}
+		return "", os.ErrPermission
+	})
+	defer config.ResetUserHomeDirForTest()
+	app := App{Out: output.Writer{Out: os.Stdout, ErrW: os.Stderr}}
+	if code := app.runDoctor(context.Background(), nil); code == 0 {
+		t.Fatalf("expected expand error")
+	}
+}
+
+func TestDoctorValidateError(t *testing.T) {
+	home := t.TempDir()
+	config.SetUserHomeDirForTest(func() (string, error) { return home, nil })
+	defer config.ResetUserHomeDirForTest()
+	path, err := config.DefaultConfigPath()
+	if err != nil {
+		t.Fatalf("path error: %v", err)
+	}
+	cfg := config.Config{
+		ProjectsRoot:   "x",
+		ReposRoot:      "y",
+		SkillsRoot:     "z",
+		SkillTargets:   []string{".codex/skills"},
+		SyncTargets:    []config.SyncTarget{{}},
+		SyncMode:       "bad",
+		ConflictPolicy: "fail",
+		DenyCommands:   []string{"rm -rf*"},
+	}
+	if err := config.Save(path, cfg); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	app := App{Out: output.Writer{Out: os.Stdout, ErrW: os.Stderr}}
+	if code := app.runDoctor(context.Background(), nil); code == 0 {
+		t.Fatalf("expected validate error")
+	}
 }

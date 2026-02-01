@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -100,6 +101,14 @@ func TestSaveError(t *testing.T) {
 	}
 	_ = os.Chmod(dir, 0o755)
 
+	fileParent := filepath.Join(tmp, "file-parent")
+	if err := os.WriteFile(fileParent, []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	if err := Save(filepath.Join(fileParent, "config.json"), Config{}); err == nil {
+		t.Fatalf("expected mkdir error")
+	}
+
 	dir2 := filepath.Join(tmp, "readonly")
 	if err := os.MkdirAll(dir2, 0o555); err != nil {
 		t.Fatalf("mkdir: %v", err)
@@ -109,6 +118,19 @@ func TestSaveError(t *testing.T) {
 		t.Fatalf("expected write error")
 	}
 	_ = os.Chmod(dir2, 0o755)
+}
+
+func TestSaveMarshalError(t *testing.T) {
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "config.json")
+	orig := jsonMarshalIndent
+	jsonMarshalIndent = func(interface{}, string, string) ([]byte, error) {
+		return nil, errors.New("marshal")
+	}
+	defer func() { jsonMarshalIndent = orig }()
+	if err := Save(path, Config{}); err == nil {
+		t.Fatalf("expected marshal error")
+	}
 }
 
 func TestExpandPathError(t *testing.T) {
@@ -143,6 +165,93 @@ func TestExpandConfigPathsError(t *testing.T) {
 	if _, err := ExpandConfigPaths(cfg); err == nil {
 		t.Fatalf("expected expand error")
 	}
+}
+
+func TestExpandConfigPathsErrorStages(t *testing.T) {
+	t.Run("repos", func(t *testing.T) {
+		SetUserHomeDirForTest(func() (string, error) { return "", os.ErrPermission })
+		defer ResetUserHomeDirForTest()
+		cfg := Config{
+			ProjectsRoot: "/tmp",
+			ReposRoot:    "~/repos",
+			SkillsRoot:   "/tmp/skills",
+		}
+		if _, err := ExpandConfigPaths(cfg); err == nil {
+			t.Fatalf("expected repos error")
+		}
+	})
+	t.Run("skills", func(t *testing.T) {
+		SetUserHomeDirForTest(func() (string, error) { return "", os.ErrPermission })
+		defer ResetUserHomeDirForTest()
+		cfg := Config{
+			ProjectsRoot: "/tmp",
+			ReposRoot:    "/tmp/repos",
+			SkillsRoot:   "~/skills",
+		}
+		if _, err := ExpandConfigPaths(cfg); err == nil {
+			t.Fatalf("expected skills error")
+		}
+	})
+	t.Run("allow", func(t *testing.T) {
+		SetUserHomeDirForTest(func() (string, error) { return "", os.ErrPermission })
+		defer ResetUserHomeDirForTest()
+		cfg := Config{
+			ProjectsRoot: "/tmp",
+			ReposRoot:    "/tmp/repos",
+			SkillsRoot:   "/tmp/skills",
+			AllowPaths:   []string{"~/allow"},
+		}
+		if _, err := ExpandConfigPaths(cfg); err == nil {
+			t.Fatalf("expected allow error")
+		}
+	})
+	t.Run("deny", func(t *testing.T) {
+		SetUserHomeDirForTest(func() (string, error) { return "", os.ErrPermission })
+		defer ResetUserHomeDirForTest()
+		cfg := Config{
+			ProjectsRoot: "/tmp",
+			ReposRoot:    "/tmp/repos",
+			SkillsRoot:   "/tmp/skills",
+			DenyPaths:    []string{"~/deny"},
+		}
+		if _, err := ExpandConfigPaths(cfg); err == nil {
+			t.Fatalf("expected deny error")
+		}
+	})
+	t.Run("sync-src", func(t *testing.T) {
+		SetUserHomeDirForTest(func() (string, error) { return "", os.ErrPermission })
+		defer ResetUserHomeDirForTest()
+		cfg := Config{
+			ProjectsRoot: "/tmp",
+			ReposRoot:    "/tmp/repos",
+			SkillsRoot:   "/tmp/skills",
+			SyncTargets: []SyncTarget{{
+				Name: "skills",
+				Src:  "~/src",
+				Dest: []string{".codex/skills"},
+			}},
+		}
+		if _, err := ExpandConfigPaths(cfg); err == nil {
+			t.Fatalf("expected sync src error")
+		}
+	})
+	t.Run("sync-dest", func(t *testing.T) {
+		SetUserHomeDirForTest(func() (string, error) { return "", os.ErrPermission })
+		defer ResetUserHomeDirForTest()
+		cfg := Config{
+			ProjectsRoot: "/tmp",
+			ReposRoot:    "/tmp/repos",
+			SkillsRoot:   "/tmp/skills",
+			SyncTargets: []SyncTarget{{
+				Name: "skills",
+				Src:  "/tmp/src",
+				Dest: []string{"~/dest"},
+			}},
+		}
+		if _, err := ExpandConfigPaths(cfg); err == nil {
+			t.Fatalf("expected sync dest error")
+		}
+	})
 }
 
 func TestExpandConfigPathsSuccess(t *testing.T) {

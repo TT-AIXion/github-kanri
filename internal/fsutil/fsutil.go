@@ -30,6 +30,20 @@ const (
 	ConflictOverwrite ConflictPolicy = "overwrite"
 )
 
+var (
+	osMkdirAll  = os.MkdirAll
+	osOpen      = os.Open
+	osCreate    = os.Create
+	osChmod     = os.Chmod
+	osSymlink   = os.Symlink
+	osRemoveAll = os.RemoveAll
+	osLstat     = os.Lstat
+	walkDir     = filepath.WalkDir
+	relPath     = filepath.Rel
+	ioCopy      = io.Copy
+	fileStat    = func(f *os.File) (os.FileInfo, error) { return f.Stat() }
+)
+
 type SyncOptions struct {
 	Mode           SyncMode
 	ConflictPolicy ConflictPolicy
@@ -46,7 +60,7 @@ func IsGitRepo(path string) bool {
 func ListGitRepos(root string) ([]string, error) {
 	var repos []string
 	seen := make(map[string]struct{})
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	err := walkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -90,14 +104,14 @@ func ListFiles(root string, include []string, exclude []string) ([]string, error
 	if len(include) == 0 {
 		include = []string{"**/*"}
 	}
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	err := walkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if path == root {
 			return nil
 		}
-		rel, err := filepath.Rel(root, path)
+		rel, err := relPath(root, path)
 		if err != nil {
 			return err
 		}
@@ -128,61 +142,61 @@ func EnsureDir(path string, dryRun bool) error {
 	if dryRun {
 		return nil
 	}
-	return os.MkdirAll(path, 0o755)
+	return osMkdirAll(path, 0o755)
 }
 
 func CopyFile(src, dst string, dryRun bool) error {
 	if dryRun {
 		return nil
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := osMkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		return err
 	}
-	srcFile, err := os.Open(src)
+	srcFile, err := osOpen(src)
 	if err != nil {
 		return err
 	}
 	defer srcFile.Close()
-	info, err := srcFile.Stat()
+	info, err := fileStat(srcFile)
 	if err != nil {
 		return err
 	}
-	dstFile, err := os.Create(dst)
+	dstFile, err := osCreate(dst)
 	if err != nil {
 		return err
 	}
 	defer dstFile.Close()
-	if _, err := io.Copy(dstFile, srcFile); err != nil {
+	if _, err := ioCopy(dstFile, srcFile); err != nil {
 		return err
 	}
-	return os.Chmod(dst, info.Mode())
+	return osChmod(dst, info.Mode())
 }
 
 func LinkFile(src, dst string, dryRun bool) error {
 	if dryRun {
 		return nil
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := osMkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		return err
 	}
-	return os.Symlink(src, dst)
+	return osSymlink(src, dst)
 }
 
 func RemovePath(path string, dryRun bool) error {
 	if dryRun {
 		return nil
 	}
-	return os.RemoveAll(path)
+	return osRemoveAll(path)
 }
 
 func FileHash(path string) (string, error) {
-	file, err := os.Open(path)
+	file, err := osOpen(path)
 	if err != nil {
 		return "", err
 	}
 	defer file.Close()
 	h := sha256.New()
-	if _, err := io.Copy(h, file); err != nil {
+	if _, err := ioCopy(h, file); err != nil {
 		return "", err
 	}
 	return hex.EncodeToString(h.Sum(nil)), nil
@@ -227,7 +241,7 @@ func SyncDir(srcRoot, destRoot string, opts SyncOptions) error {
 }
 
 func applyConflictPolicy(dst string, opts SyncOptions) error {
-	if _, err := os.Lstat(dst); err != nil {
+	if _, err := osLstat(dst); err != nil {
 		return nil
 	}
 	if opts.ConflictPolicy == ConflictOverwrite {
@@ -244,14 +258,14 @@ func mirrorCleanup(srcRoot, destRoot string, keep []string, opts SyncOptions) er
 	for _, rel := range keep {
 		keepSet[filepath.ToSlash(rel)] = struct{}{}
 	}
-	return filepath.WalkDir(destRoot, func(path string, d fs.DirEntry, err error) error {
+	return walkDir(destRoot, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if path == destRoot {
 			return nil
 		}
-		rel, err := filepath.Rel(destRoot, path)
+		rel, err := relPath(destRoot, path)
 		if err != nil {
 			return err
 		}
@@ -319,14 +333,14 @@ func CleanDir(destRoot string, keep []string, dryRun bool) error {
 	for _, rel := range keep {
 		keepSet[filepath.ToSlash(rel)] = struct{}{}
 	}
-	return filepath.WalkDir(destRoot, func(path string, d fs.DirEntry, err error) error {
+	return walkDir(destRoot, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if path == destRoot {
 			return nil
 		}
-		rel, err := filepath.Rel(destRoot, path)
+		rel, err := relPath(destRoot, path)
 		if err != nil {
 			return err
 		}

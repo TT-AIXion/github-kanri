@@ -8,7 +8,7 @@ import (
 )
 
 func (a App) runSkills(ctx context.Context, args []string) int {
-	if len(args) == 0 || isHelp(args[0]) {
+	if len(args) == 0 || args[0] == "help" {
 		a.Out.Raw(`gkn skills <command>
 
 Commands:
@@ -48,7 +48,7 @@ Common flags:
 		return a.runSkillsPin(ctx, args[1:])
 	case "clean":
 		return a.runSkillsClean(ctx, args[1:])
-	case "--help", "-h", "help":
+	case "--help", "-h":
 		fs := flag.NewFlagSet("skills", flag.ContinueOnError)
 		fs.SetOutput(os.Stdout)
 		_ = fs.Parse([]string{})

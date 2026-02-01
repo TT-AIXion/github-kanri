@@ -9,6 +9,7 @@ import (
 )
 
 var userHomeDir = os.UserHomeDir
+var jsonMarshalIndent = json.MarshalIndent
 
 func SetUserHomeDirForTest(fn func() (string, error)) {
 	userHomeDir = fn
@@ -107,7 +108,7 @@ func Save(path string, cfg Config) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	data, err := json.MarshalIndent(cfg, "", "  ")
+	data, err := jsonMarshalIndent(cfg, "", "  ")
 	if err != nil {
 		return err
 	}

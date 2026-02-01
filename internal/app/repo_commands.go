@@ -8,7 +8,7 @@ import (
 )
 
 func (a App) runRepo(ctx context.Context, args []string) int {
-	if len(args) == 0 || isHelp(args[0]) {
+	if len(args) == 0 || args[0] == "help" {
 		a.Out.Raw(`gkn repo <command>
 
 Commands:
@@ -48,7 +48,7 @@ Common flags:
 		return a.runRepoClone(ctx, args[1:])
 	case "exec":
 		return a.runRepoExec(ctx, args[1:])
-	case "--help", "-h", "help":
+	case "--help", "-h":
 		fs := flag.NewFlagSet("repo", flag.ContinueOnError)
 		fs.SetOutput(os.Stdout)
 		_ = fs.Parse([]string{})

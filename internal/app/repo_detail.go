@@ -13,6 +13,8 @@ import (
 	"github.com/AIXion-Team/github-kanri/internal/repo"
 )
 
+var logOneline = gitutil.LogOneline
+
 func (a App) runRepoOpen(ctx context.Context, args []string) int {
 	fs := flag.NewFlagSet("repo open", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
@@ -183,7 +185,7 @@ func (a App) runRepoGraph(ctx context.Context, args []string) int {
 		return 1
 	}
 	runner := buildRunner(cfg, false)
-	log, err := gitutil.LogOneline(ctx, runner, selected.Path, *limit)
+	log, err := logOneline(ctx, runner, selected.Path, *limit)
 	if err != nil {
 		a.Out.Warn("no commits", nil)
 		return 0

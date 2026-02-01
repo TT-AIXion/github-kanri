@@ -13,6 +13,9 @@ import (
 	"github.com/AIXion-Team/github-kanri/internal/gitutil"
 )
 
+var timeAfter = time.After
+var removeAll = os.RemoveAll
+
 func (a App) runSkillsClone(ctx context.Context, args []string) int {
 	fs := flag.NewFlagSet("skills clone", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
@@ -49,7 +52,7 @@ func (a App) runSkillsClone(ctx context.Context, args []string) int {
 			a.Out.Err("skillsRoot exists (use --force)", nil)
 			return 1
 		}
-		if err := os.RemoveAll(cfg.SkillsRoot); err != nil {
+		if err := removeAll(cfg.SkillsRoot); err != nil {
 			a.Out.Err(err.Error(), nil)
 			return 1
 		}
@@ -140,7 +143,7 @@ func (a App) runSkillsWatch(ctx context.Context, args []string) int {
 		select {
 		case <-ctx.Done():
 			return 0
-		case <-time.After(time.Duration(*interval) * time.Second):
+		case <-timeAfter(time.Duration(*interval) * time.Second):
 			newState, err := skillsState(ctx, cfg)
 			if err != nil {
 				a.Out.Err(err.Error(), nil)
