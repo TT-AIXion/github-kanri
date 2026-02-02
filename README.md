@@ -16,10 +16,8 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 ### Homebrew
 
+- `brew install TT-AIXion/github-kanri/gkn`（自前 tap）
 - `brew install gkn`（homebrew-core 採用後）
-- それまでは tap を使う:
-  - `brew tap TT-AIXion/homebrew-tap`
-  - `brew install gkn`
 
 ### GitHub Release
 
