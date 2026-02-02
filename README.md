@@ -16,10 +16,10 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 ### Homebrew
 
-- `brew install <tap>/gkn`（tap は GitHub Actions 変数 `HOMEBREW_TAP_OWNER` / `HOMEBREW_TAP_NAME`）
-- 例: `brew install TT-AIXion/homebrew-tap/gkn`
-- tap 後は `brew install gkn` で可
-- homebrew-core に採用されると tap 不要
+- `brew install gkn`（homebrew-core 採用後）
+- それまでは tap を使う:
+  - `brew tap TT-AIXion/homebrew-tap`
+  - `brew install gkn`
 
 ### GitHub Release
 
@@ -27,8 +27,8 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 ### npm
 
-- `npm install -g @tt-aixion/gkn`
-- `npx @tt-aixion/gkn --help`
+- `npm install -g gkn`
+- `npx gkn --help`
 
 ### ビルド（暫定）
 

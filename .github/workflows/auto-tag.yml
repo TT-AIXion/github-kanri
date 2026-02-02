@@ -55,6 +55,8 @@ jobs:
         run: npm install -g npm@latest
       - name: Publish npm
         if: env.NPM_PUBLISH == 'auto-tag'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd npm
           version="${GKN_TAG#v}"
@@ -63,5 +65,7 @@ jobs:
           if [[ "${version}" == *"-"* ]]; then
             disttag="next"
           fi
-          unset NODE_AUTH_TOKEN
-          npm publish --access public --tag "${disttag}" --provenance
+          if [[ -n "${NPM_TOKEN}" ]]; then
+            npm config set //registry.npmjs.org/:_authToken="${NPM_TOKEN}"
+          fi
+          npm publish --tag "${disttag}" --provenance
