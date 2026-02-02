@@ -43,7 +43,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest
       - name: Publish npm
-        if: env.NPM_PUBLISH == 'true'
+        if: env.NPM_PUBLISH == 'release'
         run: |
           cd npm
           version="${GITHUB_REF_NAME#v}"

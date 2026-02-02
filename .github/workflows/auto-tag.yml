@@ -54,7 +54,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest
       - name: Publish npm
-        if: env.NPM_PUBLISH == 'true'
+        if: env.NPM_PUBLISH == 'auto-tag'
         run: |
           cd npm
           version="${GKN_TAG#v}"
