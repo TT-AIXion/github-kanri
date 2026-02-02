@@ -1,53 +1,94 @@
-# github-kanri
+# github-kanri / gkn
 
-GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
-コマンドのみ・非対話・安全設計。ローカル運用前提。
+GitHub リポ管理 CLI。
+ローカル運用・非対話・安全設計。
 
-## 名前
+## コンセプト
 
-- コマンド名: `gkn`
+- 迷わせない: 曖昧一致は候補のみ
+- 壊さない: deny 最優先・違反即失敗
+- 速い: まとめて観測・最小出力
+- 使える: `--json` で機械可読
 
-## 前提
+## 動作環境
 
-- macOS ローカル
-- 1 つの設定ファイルのみ
+- macOS
+- Git
 
 ## インストール
 
-### Homebrew
+Homebrew:
 
-- `brew install TT-AIXion/github-kanri/gkn`（自前 tap）
-- `brew install gkn`（homebrew-core 採用後）
+```
+brew install TT-AIXion/github-kanri/gkn
+```
 
-### GitHub Release
+更新:
 
-- Release のアセットから取得
+```
+brew update
+brew upgrade gkn
+```
 
-### npm
+GitHub Releases:
 
-- `npm install -g gkn`
-- `npx gkn --help`
+- Releases のアセットから取得
 
-### ビルド（暫定）
+Go でインストール:
 
-- `go build -o gkn ./cmd/gkn`
+```
+go install github.com/TT-AIXion/github-kanri/cmd/gkn@<tag>
+```
 
-## 品質チェック
+ソースからビルド:
 
-- `scripts/quality.sh` (go vet + go test coverage)
+```
+go build -o gkn ./cmd/gkn
+```
+
+## クイックスタート
+
+```
+gkn config init
+gkn config show
+gkn repo list
+gkn repo status
+gkn repo recent --limit 10
+```
+
+## 主要コマンド
+
+```
+gkn <command> [args]
+```
+
+- `repo` リポ操作
+- `skills` スキル同期
+- `config` 設定
+- `doctor` 環境チェック
+- `version` バージョン
+
+詳細:
+
+```
+gkn <command> --help
+```
 
 ## 設定
 
-- 例: `~/.config/github-kanri/config.json`
-- 1 箇所のみを参照
-- `skillsRemote` は `gkn skills clone --remote` で上書き可
+パス:
+
+```
+~/.config/github-kanri/config.json
+```
+
+例:
 
 ```json
 {
   "projectsRoot": "~/Projects",
   "reposRoot": "~/Projects/repos",
   "skillsRoot": "~/Projects/skills",
-  "skillsRemote": "git@github.com:org/skills.git",
   "skillTargets": [".codex/skills", ".claude/skills"],
   "syncTargets": [
     {
@@ -56,73 +97,46 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
       "dest": [".codex/skills", ".claude/skills"],
       "include": ["**/*"],
       "exclude": [".git/**"]
-    },
-    {
-      "name": "templates",
-      "src": "~/Projects/shared/templates",
-      "dest": ["./.github"],
-      "include": ["**/*"],
-      "exclude": [".git/**"]
     }
   ],
-  "allowCommands": ["git status", "git fetch", "git pull"],
-  "denyCommands": ["rm -rf", "git reset --hard"],
+  "allowCommands": [
+    "git status*",
+    "git log*",
+    "git rev-parse*",
+    "git config*",
+    "git remote*",
+    "git clone*",
+    "git fetch*",
+    "git pull*",
+    "git checkout*",
+    "code *"
+  ],
+  "denyCommands": [
+    "rm -rf*",
+    "git reset --hard*"
+  ],
   "syncMode": "copy",
   "conflictPolicy": "fail"
 }
 ```
 
-## 主要コマンド（案）
+ポイント:
 
-### repo
+- `denyCommands` 最優先
+- `allowCommands` ワイルドカード対応
+- `~` は展開
 
-- `gkn repo list`
-- `gkn repo status`
-- `gkn repo open <pattern> --pick <n>`
-- `gkn repo path <pattern> --pick <n>`
-- `gkn repo recent --limit <n>`
-- `gkn repo info <pattern> --pick <n>`
-- `gkn repo graph <pattern> --pick <n> --limit <n>`
-- `gkn repo clone <url> [--name <repo>]`
-- `gkn repo exec --cmd "<command>" [--parallel <n>] [--timeout <sec>] [--require-clean]`
+## 出力
 
-### skills / sync
+- デフォルト: 人間向け
+- `--json`: JSON
 
-- `gkn skills clone`
-- `gkn skills sync [--target <name>]`
-- `gkn skills watch [--target <name>]`
-- `gkn skills diff [--target <name>]`
-- `gkn skills verify [--target <name>]`
-- `gkn skills status [--target <name>]`
-- `gkn skills link [--target <name>]`
-- `gkn skills pin --target <name> --ref <commit|tag>`
-- `gkn skills clean [--target <name>]`
+## 品質チェック
 
-### config / system
+```
+scripts/quality.sh
+```
 
-- `gkn config show`
-- `gkn config init`
-- `gkn config validate`
-- `gkn doctor`
-- `gkn version`
+## ライセンス
 
-## 共通オプション（案）
-
-- `--force`: 衝突時上書き（既定は fail）
-- `--dry-run`: 実行せずに差分/対象のみ表示
-- `--only <pattern>`: 対象限定（glob）
-- `--exclude <pattern>`: 対象除外（glob）
-- `--json`: 機械可読出力
-
-## 安全設計
-
-- deny ルール最優先、違反時は即失敗
-- 既定は `copy` + `fail`（上書きは `--force`）
-- 曖昧一致は候補のみ出力（非対話）
-
-## 目的
-
-- ローカル GitHub プロジェクト管理を最短で回す
-- LLM から呼び出しても安全/再現性/明確な失敗理由
-
-## 開発メモ
+MIT
