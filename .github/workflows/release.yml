@@ -13,6 +13,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      NPM_PUBLISH: ${{ vars.NPM_PUBLISH }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -41,6 +43,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest
       - name: Publish npm
+        if: env.NPM_PUBLISH == 'true'
         run: |
           cd npm
           version="${GITHUB_REF_NAME#v}"
@@ -49,4 +52,5 @@ jobs:
           if [[ "${version}" == *"-"* ]]; then
             disttag="next"
           fi
+          unset NODE_AUTH_TOKEN
           npm publish --access public --tag "${disttag}" --provenance
