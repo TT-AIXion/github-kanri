@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/config"
 )
 
 func TestConsumeJSONFlag(t *testing.T) {

@@ -1,3 +1,3 @@
-module github.com/AIXion-Team/github-kanri
+module github.com/TT-AIXion/github-kanri
 
 go 1.22

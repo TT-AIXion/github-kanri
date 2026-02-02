@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/AIXion-Team/github-kanri/internal/fsutil"
-	"github.com/AIXion-Team/github-kanri/internal/repo"
+	"github.com/TT-AIXion/github-kanri/internal/fsutil"
+	"github.com/TT-AIXion/github-kanri/internal/repo"
 )
 
 func (a App) runSkillsDiff(ctx context.Context, args []string) int {

@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
-	"github.com/AIXion-Team/github-kanri/internal/output"
+	"github.com/TT-AIXion/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/output"
 )
 
 func TestDoctor(t *testing.T) {

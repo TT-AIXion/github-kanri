@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/AIXion-Team/github-kanri/internal/output"
+	"github.com/TT-AIXion/github-kanri/internal/output"
 )
 
 type App struct {

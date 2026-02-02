@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AIXion-Team/github-kanri/internal/gitutil"
-	"github.com/AIXion-Team/github-kanri/internal/repo"
+	"github.com/TT-AIXion/github-kanri/internal/gitutil"
+	"github.com/TT-AIXion/github-kanri/internal/repo"
 )
 
 func (a App) runRepoExec(ctx context.Context, args []string) int {

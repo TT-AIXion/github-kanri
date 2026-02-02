@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AIXion-Team/github-kanri/internal/safety"
+	"github.com/TT-AIXion/github-kanri/internal/safety"
 )
 
 func TestRunDry(t *testing.T) {

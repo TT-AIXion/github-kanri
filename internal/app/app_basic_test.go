@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/config"
 )
 
 func TestAppRunBasic(t *testing.T) {

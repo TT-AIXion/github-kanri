@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/AIXion-Team/github-kanri/internal/executil"
+	"github.com/TT-AIXion/github-kanri/internal/executil"
 )
 
 func TestRepoListScanError(t *testing.T) {

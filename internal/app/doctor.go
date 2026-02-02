@@ -7,7 +7,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/config"
 )
 
 func (a App) runDoctor(_ context.Context, args []string) int {

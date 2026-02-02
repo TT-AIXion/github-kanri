@@ -3,9 +3,9 @@ package app
 import (
 	"fmt"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
-	"github.com/AIXion-Team/github-kanri/internal/executil"
-	"github.com/AIXion-Team/github-kanri/internal/safety"
+	"github.com/TT-AIXion/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/executil"
+	"github.com/TT-AIXion/github-kanri/internal/safety"
 )
 
 func loadConfig() (config.Config, string, error) {

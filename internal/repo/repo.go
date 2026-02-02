@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/AIXion-Team/github-kanri/internal/fsutil"
-	"github.com/AIXion-Team/github-kanri/internal/match"
+	"github.com/TT-AIXion/github-kanri/internal/fsutil"
+	"github.com/TT-AIXion/github-kanri/internal/match"
 )
 
 type Repo struct {

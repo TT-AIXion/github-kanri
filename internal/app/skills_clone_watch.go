@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
-	"github.com/AIXion-Team/github-kanri/internal/fsutil"
-	"github.com/AIXion-Team/github-kanri/internal/gitutil"
+	"github.com/TT-AIXion/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/fsutil"
+	"github.com/TT-AIXion/github-kanri/internal/gitutil"
 )
 
 var timeAfter = time.After

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AIXion-Team/github-kanri/internal/safety"
+	"github.com/TT-AIXion/github-kanri/internal/safety"
 )
 
 type Runner struct {

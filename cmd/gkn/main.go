@@ -4,8 +4,8 @@ import (
 	"context"
 	"os"
 
-	"github.com/AIXion-Team/github-kanri/internal/app"
-	"github.com/AIXion-Team/github-kanri/internal/output"
+	"github.com/TT-AIXion/github-kanri/internal/app"
+	"github.com/TT-AIXion/github-kanri/internal/output"
 )
 
 var Version = "dev"

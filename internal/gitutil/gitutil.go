@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/AIXion-Team/github-kanri/internal/executil"
+	"github.com/TT-AIXion/github-kanri/internal/executil"
 )
 
 var symbolicRef = func(ctx context.Context, r executil.Runner, repo string) (executil.Result, error) {

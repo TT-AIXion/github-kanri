@@ -3,7 +3,7 @@ package app
 import (
 	"time"
 
-	"github.com/AIXion-Team/github-kanri/internal/repo"
+	"github.com/TT-AIXion/github-kanri/internal/repo"
 )
 
 type repoStatus struct {

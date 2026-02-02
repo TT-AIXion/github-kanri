@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/AIXion-Team/github-kanri/internal/gitutil"
-	"github.com/AIXion-Team/github-kanri/internal/repo"
+	"github.com/TT-AIXion/github-kanri/internal/gitutil"
+	"github.com/TT-AIXion/github-kanri/internal/repo"
 )
 
 var logOneline = gitutil.LogOneline

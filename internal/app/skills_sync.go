@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
-	"github.com/AIXion-Team/github-kanri/internal/fsutil"
-	"github.com/AIXion-Team/github-kanri/internal/repo"
-	"github.com/AIXion-Team/github-kanri/internal/safety"
+	"github.com/TT-AIXion/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/fsutil"
+	"github.com/TT-AIXion/github-kanri/internal/repo"
+	"github.com/TT-AIXion/github-kanri/internal/safety"
 )
 
 func (a App) runSkillsSync(ctx context.Context, args []string) int {

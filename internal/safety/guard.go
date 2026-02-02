@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/AIXion-Team/github-kanri/internal/match"
+	"github.com/TT-AIXion/github-kanri/internal/match"
 )
 
 type Guard struct {

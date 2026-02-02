@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AIXion-Team/github-kanri/internal/output"
+	"github.com/TT-AIXion/github-kanri/internal/output"
 )
 
 func TestSkillsClonePullError(t *testing.T) {

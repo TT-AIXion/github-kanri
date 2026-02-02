@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/AIXion-Team/github-kanri/internal/config"
+	"github.com/TT-AIXion/github-kanri/internal/config"
 )
 
 var defaultConfig = config.DefaultConfig
