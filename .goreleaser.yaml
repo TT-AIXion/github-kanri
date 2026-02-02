@@ -19,9 +19,10 @@ builds:
 
 archives:
   - id: gkn
-    builds:
+    ids:
       - gkn
-    format: tar.gz
+    formats:
+      - tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
@@ -53,8 +54,8 @@ homebrew_casks:
       template: "https://github.com/AIXion-Team/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
       verified: "github.com/AIXion-Team/github-kanri"
     repository:
-      owner: "{{ .Env.HOMEBREW_TAP_OWNER | default \"AIXion-Team\" }}"
-      name: "{{ .Env.HOMEBREW_TAP_NAME | default \"homebrew-tap\" }}"
+      owner: "{{ .Env.HOMEBREW_TAP_OWNER }}"
+      name: "{{ .Env.HOMEBREW_TAP_NAME }}"
       branch: main
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
     skip_upload: "{{ if or (eq .Env.HOMEBREW_TAP_OWNER \"\") (eq .Env.HOMEBREW_TAP_NAME \"\") (eq .Env.HOMEBREW_TAP_TOKEN \"\") }}true{{ else }}auto{{ end }}"
