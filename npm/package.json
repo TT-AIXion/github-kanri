@@ -1,0 +1,29 @@
+{
+  "name": "@aixion-team/gkn",
+  "version": "0.0.0",
+  "description": "GitHub リポジトリ管理 CLI",
+  "license": "MIT",
+  "bin": {
+    "gkn": "bin/gkn.js"
+  },
+  "files": [
+    "bin/gkn.js",
+    "scripts/install.js",
+    "README.md"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/install.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AIXion-Team/github-kanri.git",
+    "directory": "npm"
+  },
+  "bugs": {
+    "url": "https://github.com/AIXion-Team/github-kanri/issues"
+  },
+  "homepage": "https://github.com/AIXion-Team/github-kanri",
+  "engines": {
+    "node": ">=18"
+  }
+}

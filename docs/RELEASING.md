@@ -25,3 +25,10 @@ Homebrew Cask を有効にする場合のみ設定。
 
 - `brew install gkn` を tap 無しで行うには homebrew-core 採用が必要
 - 申請は安定版 tag (`vX.Y.Z`) 推奨
+
+## npm
+
+- Actions secrets: `NPM_TOKEN`
+- パッケージ名: `@aixion-team/gkn`
+- tag に `-` が入る場合は dist-tag `next`
+- 安定版は dist-tag `latest`

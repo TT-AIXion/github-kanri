@@ -25,6 +25,11 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 - Release のアセットから取得
 
+### npm
+
+- `npm install -g @aixion-team/gkn`
+- `npx @aixion-team/gkn --help`
+
 ### ビルド（暫定）
 
 - `go build -o gkn ./cmd/gkn`

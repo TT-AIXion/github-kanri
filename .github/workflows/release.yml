@@ -12,6 +12,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -32,3 +34,25 @@ jobs:
           HOMEBREW_TAP_OWNER: ${{ vars.HOMEBREW_TAP_OWNER }}
           HOMEBREW_TAP_NAME: ${{ vars.HOMEBREW_TAP_NAME }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org/"
+      - name: Publish npm
+        if: env.NPM_TOKEN != ''
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NPM_TOKEN}" ]; then
+            echo "NPM_TOKEN missing; skip publish"
+            exit 0
+          fi
+          cd npm
+          version="${GITHUB_REF_NAME#v}"
+          npm version --no-git-tag-version "${version}"
+          disttag="latest"
+          if [[ "${version}" == *"-"* ]]; then
+            disttag="next"
+          fi
+          npm publish --access public --tag "${disttag}"
