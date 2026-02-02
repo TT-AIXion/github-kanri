@@ -12,7 +12,18 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 - macOS ローカル
 - 1 つの設定ファイルのみ
 
-## インストール（暫定）
+## インストール
+
+### Homebrew（準備後）
+
+- `brew install --cask <tap>/gkn`
+- tap は GitHub Actions 変数 `HOMEBREW_TAP_OWNER` / `HOMEBREW_TAP_NAME` に合わせる
+
+### GitHub Release
+
+- Release のアセットから取得
+
+### ビルド（暫定）
 
 - `go build -o gkn ./cmd/gkn`
 

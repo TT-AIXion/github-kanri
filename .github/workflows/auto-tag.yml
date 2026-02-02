@@ -1,0 +1,29 @@
+name: auto-tag
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create tag
+        run: |
+          ts=$(date -u +%Y%m%d.%H%M%S)
+          sha=$(git rev-parse --short=7 HEAD)
+          tag="v0.0.0-main.${ts}.${sha}"
+          git tag -a "${tag}" -m "release ${tag}"
+          git push origin "${tag}"

@@ -1,0 +1,64 @@
+project_name: gkn
+
+builds:
+  - id: gkn
+    main: ./cmd/gkn
+    binary: gkn
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.Version={{ .Version }}
+
+archives:
+  - id: gkn
+    builds:
+      - gkn
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+release:
+  prerelease: auto
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+homebrew_casks:
+  - name: gkn
+    ids:
+      - gkn
+    binaries:
+      - gkn
+    homepage: "https://github.com/AIXion-Team/github-kanri"
+    description: "GitHub リポジトリ管理 CLI"
+    license: "MIT"
+    url:
+      template: "https://github.com/AIXion-Team/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+      verified: "github.com/AIXion-Team/github-kanri"
+    repository:
+      owner: "{{ .Env.HOMEBREW_TAP_OWNER | default \"AIXion-Team\" }}"
+      name: "{{ .Env.HOMEBREW_TAP_NAME | default \"homebrew-tap\" }}"
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    skip_upload: "{{ if or (eq .Env.HOMEBREW_TAP_OWNER \"\") (eq .Env.HOMEBREW_TAP_NAME \"\") (eq .Env.HOMEBREW_TAP_TOKEN \"\") }}true{{ else }}auto{{ end }}"
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/gkn"]
+          end
