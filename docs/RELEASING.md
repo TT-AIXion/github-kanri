@@ -29,6 +29,6 @@ Homebrew Cask を有効にする場合のみ設定。
 ## npm
 
 - Actions secrets: `NPM_TOKEN`
-- パッケージ名: `@aixion-team/gkn`
+- パッケージ名: `@tt-aixion/gkn`
 - tag に `-` が入る場合は dist-tag `next`
 - 安定版は dist-tag `latest`

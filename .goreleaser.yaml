@@ -45,10 +45,10 @@ brews:
   - name: gkn
     ids:
       - gkn
-    homepage: "https://github.com/AIXion-Team/github-kanri"
+    homepage: "https://github.com/TT-AIXion/github-kanri"
     description: "GitHub リポジトリ管理 CLI"
     license: "MIT"
-    url_template: "https://github.com/AIXion-Team/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    url_template: "https://github.com/TT-AIXion/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     directory: Formula
     install: |
       bin.install "gkn"
@@ -67,12 +67,12 @@ homebrew_casks:
       - gkn
     binaries:
       - gkn
-    homepage: "https://github.com/AIXion-Team/github-kanri"
+    homepage: "https://github.com/TT-AIXion/github-kanri"
     description: "GitHub リポジトリ管理 CLI"
     license: "MIT"
     url:
-      template: "https://github.com/AIXion-Team/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-      verified: "github.com/AIXion-Team/github-kanri"
+      template: "https://github.com/TT-AIXion/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+      verified: "github.com/TT-AIXion/github-kanri"
     repository:
       owner: "{{ .Env.HOMEBREW_TAP_OWNER }}"
       name: "{{ .Env.HOMEBREW_TAP_NAME }}"

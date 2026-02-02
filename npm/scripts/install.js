@@ -29,7 +29,7 @@ if (!platform || !arch) {
 }
 
 const artifact = `gkn_${version}_${platform}_${arch}.tar.gz`;
-const baseUrl = `https://github.com/AIXion-Team/github-kanri/releases/download/${tag}`;
+const baseUrl = `https://github.com/TT-AIXion/github-kanri/releases/download/${tag}`;
 const tarUrl = `${baseUrl}/${artifact}`;
 const checksumsUrl = `${baseUrl}/checksums.txt`;
 

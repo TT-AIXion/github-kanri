@@ -5,13 +5,13 @@
 ## Install
 
 ```
-npm install -g @aixion-team/gkn
+npm install -g @tt-aixion/gkn
 ```
 
 ## npx
 
 ```
-npx @aixion-team/gkn --help
+npx @tt-aixion/gkn --help
 ```
 
 ## Notes

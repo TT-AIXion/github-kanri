@@ -1,5 +1,5 @@
 {
-  "name": "@aixion-team/gkn",
+  "name": "@tt-aixion/gkn",
   "version": "0.0.0",
   "description": "GitHub リポジトリ管理 CLI",
   "license": "MIT",
@@ -16,13 +16,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AIXion-Team/github-kanri.git",
+    "url": "https://github.com/TT-AIXion/github-kanri.git",
     "directory": "npm"
   },
   "bugs": {
-    "url": "https://github.com/AIXion-Team/github-kanri/issues"
+    "url": "https://github.com/TT-AIXion/github-kanri/issues"
   },
-  "homepage": "https://github.com/AIXion-Team/github-kanri",
+  "homepage": "https://github.com/TT-AIXion/github-kanri",
   "engines": {
     "node": ">=18"
   }
