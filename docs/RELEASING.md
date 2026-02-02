@@ -3,7 +3,7 @@
 ## 自動リリース
 
 - `main` へ push/merge → `auto-tag` が `v0.0.0-main.<UTC>.<sha>` を作成
-- tag push → `release` が GitHub Release を作成
+- 同じ `auto-tag` 内で GoReleaser 実行 → GitHub Release 作成
 - `-` を含む tag は pre-release 扱い
 
 ## 安定版リリース
