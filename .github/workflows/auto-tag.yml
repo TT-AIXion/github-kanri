@@ -12,8 +12,6 @@ permissions:
 jobs:
   tag:
     runs-on: ubuntu-latest
-    env:
-      NPM_PUBLISH: ${{ vars.NPM_PUBLISH }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -46,26 +44,3 @@ jobs:
           HOMEBREW_TAP_OWNER: ${{ vars.HOMEBREW_TAP_OWNER }}
           HOMEBREW_TAP_NAME: ${{ vars.HOMEBREW_TAP_NAME }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org/"
-      - name: Update npm
-        run: npm install -g npm@latest
-      - name: Publish npm
-        if: env.NPM_PUBLISH == 'auto-tag'
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          cd npm
-          version="${GKN_TAG#v}"
-          npm version --no-git-tag-version "${version}"
-          disttag="latest"
-          if [[ "${version}" == *"-"* ]]; then
-            disttag="next"
-          fi
-          if [[ -n "${NPM_TOKEN}" ]]; then
-            npm config set //registry.npmjs.org/:_authToken="${NPM_TOKEN}"
-          fi
-          npm publish --tag "${disttag}" --provenance
