@@ -3,7 +3,6 @@
 ## Project Structure & Module Organization
 
 - `README.md`: Product overview and CLI concept.
-- `docs/requirements.md`: Source-of-truth requirements and behavior notes.
 - `.codex/skills/`: Persistent project docs for agents and maintainers.
 - `LICENSE`: Licensing details.
 - Source code and tests are not committed yet. When adding them, document the chosen paths here (e.g., `cmd/gkn/`, `internal/`, `pkg/`, `testdata/`).
@@ -43,5 +42,4 @@
 
 ## References
 
-- Requirements: `docs/requirements.md`.
 - CLI name: `gkn`.

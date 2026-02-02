@@ -62,7 +62,7 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
     {
       "name": "templates",
       "src": "~/Projects/shared/templates",
-      "dest": ["./.github", "./docs"],
+      "dest": ["./.github"],
       "include": ["**/*"],
       "exclude": [".git/**"]
     }
@@ -128,5 +128,3 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 - LLM から呼び出しても安全/再現性/明確な失敗理由
 
 ## 開発メモ
-
-- 詳細要件は `docs/requirements.md`
