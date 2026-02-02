@@ -20,3 +20,8 @@ Homebrew Cask を有効にする場合のみ設定。
 - `HOMEBREW_TAP_TOKEN` (Actions secrets: tap repo へ write 可能な PAT)
 
 `HOMEBREW_TAP_*` が未設定なら Cask の upload は skip。
+
+## homebrew-core
+
+- `brew install gkn` を tap 無しで行うには homebrew-core 採用が必要
+- 申請は安定版 tag (`vX.Y.Z`) 推奨

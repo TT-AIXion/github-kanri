@@ -14,10 +14,12 @@ GitHub リポジトリ管理 CLI（エージェント/人間両対応）。
 
 ## インストール
 
-### Homebrew（準備後）
+### Homebrew
 
-- `brew install --cask <tap>/gkn`
-- tap は GitHub Actions 変数 `HOMEBREW_TAP_OWNER` / `HOMEBREW_TAP_NAME` に合わせる
+- `brew install <tap>/gkn`（tap は GitHub Actions 変数 `HOMEBREW_TAP_OWNER` / `HOMEBREW_TAP_NAME`）
+- 例: `brew install AIXion-Team/homebrew-tap/gkn`
+- tap 後は `brew install gkn` で可
+- homebrew-core に採用されると tap 不要
 
 ### GitHub Release
 

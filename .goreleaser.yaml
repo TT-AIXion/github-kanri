@@ -41,6 +41,26 @@ changelog:
       - "^docs:"
       - "^test:"
 
+brews:
+  - name: gkn
+    ids:
+      - gkn
+    homepage: "https://github.com/AIXion-Team/github-kanri"
+    description: "GitHub リポジトリ管理 CLI"
+    license: "MIT"
+    url_template: "https://github.com/AIXion-Team/github-kanri/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    directory: Formula
+    install: |
+      bin.install "gkn"
+    test: |
+      system "#{bin}/gkn", "version"
+    repository:
+      owner: "{{ .Env.HOMEBREW_TAP_OWNER }}"
+      name: "{{ .Env.HOMEBREW_TAP_NAME }}"
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    skip_upload: "{{ if or (eq .Env.HOMEBREW_TAP_OWNER \"\") (eq .Env.HOMEBREW_TAP_NAME \"\") (eq .Env.HOMEBREW_TAP_TOKEN \"\") }}true{{ else }}auto{{ end }}"
+
 homebrew_casks:
   - name: gkn
     ids:
