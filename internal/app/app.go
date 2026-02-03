@@ -35,6 +35,8 @@ func (a App) Run(ctx context.Context, args []string) int {
 		return 0
 	case "repo":
 		return a.runRepo(ctx, args[1:])
+	case "clone":
+		return a.runRepoClone(ctx, args[1:])
 	case "skills":
 		return a.runSkills(ctx, args[1:])
 	case "config":
@@ -54,6 +56,7 @@ func (a App) printUsage() {
 	a.Out.Raw(`gkn <command>
 
 Commands:
+  clone <url> [--name repo]
   repo      repo operations
   skills    skills sync operations
   config    config operations

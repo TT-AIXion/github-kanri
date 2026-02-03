@@ -117,6 +117,9 @@ func TestRepoCloneAndExec(t *testing.T) {
 	if code := app.runRepo(context.Background(), []string{"clone", bare, "--name", "cloned"}); code == 0 {
 		t.Fatalf("expected clone error")
 	}
+	if code := app.Run(context.Background(), []string{"clone", bare, "--name", "cloned2"}); code != 0 {
+		t.Fatalf("clone alias failed")
+	}
 	if code := app.runRepo(context.Background(), []string{"exec"}); code == 0 {
 		t.Fatalf("expected exec error")
 	}

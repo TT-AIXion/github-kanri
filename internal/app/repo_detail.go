@@ -221,12 +221,24 @@ func (a App) runRepoClone(ctx context.Context, args []string) int {
 		return 1
 	}
 	url := fs.Arg(0)
+	nameFromArgs, err := parseCloneNameFromArgs(fs.Args()[1:])
+	if err != nil {
+		a.Out.Err(err.Error(), nil)
+		return 1
+	}
+	if *name != "" && nameFromArgs != "" {
+		a.Out.Err("duplicate flag: --name", nil)
+		return 1
+	}
 	cfg, _, err := loadConfig()
 	if err != nil {
 		a.Out.Err(err.Error(), nil)
 		return 1
 	}
 	repoName := *name
+	if repoName == "" {
+		repoName = nameFromArgs
+	}
 	if repoName == "" {
 		repoName = strings.TrimSuffix(filepath.Base(url), ".git")
 	}
@@ -242,4 +254,37 @@ func (a App) runRepoClone(ctx context.Context, args []string) int {
 	}
 	a.Out.OK(fmt.Sprintf("cloned %s", repoName), nil)
 	return 0
+}
+
+func parseCloneNameFromArgs(args []string) (string, error) {
+	name := ""
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		switch {
+		case arg == "--name" || arg == "-name":
+			if i+1 >= len(args) {
+				return "", fmt.Errorf("flag needs an argument: %s", arg)
+			}
+			if name != "" {
+				return "", fmt.Errorf("duplicate flag: %s", arg)
+			}
+			name = args[i+1]
+			i++
+		case strings.HasPrefix(arg, "--name="):
+			if name != "" {
+				return "", fmt.Errorf("duplicate flag: --name")
+			}
+			name = strings.TrimPrefix(arg, "--name=")
+		case strings.HasPrefix(arg, "-name="):
+			if name != "" {
+				return "", fmt.Errorf("duplicate flag: -name")
+			}
+			name = strings.TrimPrefix(arg, "-name=")
+		case strings.HasPrefix(arg, "-"):
+			return "", fmt.Errorf("flag provided but not defined: %s", arg)
+		default:
+			return "", fmt.Errorf("unexpected argument: %s", arg)
+		}
+	}
+	return name, nil
 }
