@@ -39,3 +39,4 @@ go.work.sum
 .codex/skills/*
 !.codex/skills/gkn-cli/
 !.codex/skills/gkn-cli/**
+.serena/
