@@ -1,10 +1,10 @@
 class Gkn < Formula
   desc "GitHub repository management CLI for local operations"
   homepage "https://github.com/TT-AIXion/github-kanri"
-  version "0.1.1"
+  version "0.1.2"
   url "https://github.com/TT-AIXion/github-kanri.git",
-      tag: "v0.1.1",
-      revision: "0e1b5af4bc1470feee8bd210e0baa5a18c58f7d8"
+      tag: "v0.1.2",
+      revision: "d6ed3b37cf24acd9146d8743ee5fdabb6c176c78"
   license "MIT"
 
   depends_on "go" => :build
