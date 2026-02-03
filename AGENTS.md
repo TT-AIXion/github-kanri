@@ -38,8 +38,8 @@
 
 - Push only is insufficient; Homebrew upgrades require a new tag + Formula bump.
 - Update `Formula/gkn.rb`:
-  - `version` to new release id (timestamp + short SHA or semver).
-  - `url` tag to `v<version>`.
+  - `version` to semver (e.g., `0.1.1`).
+  - `url` tag to `v<version>` (e.g., `v0.1.1`).
   - `revision` to the release commit SHA.
 - Create tag on the release commit: `v<version>` and push both commit + tag.
 - Verify: `brew update` then `brew upgrade gkn` and `gkn version`.
