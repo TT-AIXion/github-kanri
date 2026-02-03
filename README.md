@@ -1,408 +1,81 @@
 # github-kanri / gkn
 
-GitHub リポ管理 CLI。
-ローカル運用・非対話・安全設計。
+Safety-first local GitHub repo management CLI.
 
-## できること
+## Why gkn
 
-- リポ一覧・状態・最近更新を一括で把握
-- 名前あいまい一致でパス/情報/履歴を取得
-- リポの open/clone/exec を安全に実行
-- GitHub リポ作成 + skills 反映を一括で実行
-- スキルの clone/sync/diff/verify をまとめて運用
-- 設定の init/show/validate と doctor で整備
+- Deny-first safety guard (fail fast on risky commands)
+- Non-interactive and reproducible
+- Local-only (no GitHub API)
+- Fast bulk operations across many repos
+- JSON output with `--json`
+- Skills sync and verification
 
-設計方針:
+## Quickstart
 
-- 迷わせない: 曖昧一致は候補のみ
-- 壊さない: deny 最優先・違反即失敗
-- 速い: まとめて観測・最小出力
-- 使える: `--json` で機械可読
-
-## 動作環境
-
-- macOS
-- Git
-
-## インストール
-
-Homebrew:
-
-```
-brew install TT-AIXion/github-kanri/gkn
-```
-
-更新:
-
-```
-brew update
-brew upgrade gkn
-```
-
-GitHub Releases:
-
-- Releases のアセットから取得
-
-Go でインストール:
-
-```
-go install github.com/TT-AIXion/github-kanri/cmd/gkn@<tag>
-```
-
-ソースからビルド:
-
-```
-go build -o gkn ./cmd/gkn
-```
-
-## クイックスタート
-
-```
+```sh
 gkn config init
 gkn config show
-gkn quickstart my-repo
-gkn clone https://github.com/OWNER/REPO.git
 gkn repo list
 gkn repo status
 gkn repo recent --limit 10
 ```
 
-## 主要コマンド
+## Install
 
-```
-gkn <command> [args]
-```
+Homebrew:
 
-- `clone` リポ clone（reposRoot 配下）
-- `quickstart` GitHub リポ作成 + skills 反映
-- `repo` リポ操作
-- `skills` スキル同期
-- `config` 設定
-- `doctor` 環境チェック
-- `version` バージョン
-- `--json` JSON 出力（グローバル）
-
-詳細:
-
-```
-gkn <command> --help
+```sh
+brew install TT-AIXion/github-kanri/gkn
 ```
 
-## コマンド一覧（完全）
+Go install:
 
+```sh
+go install github.com/TT-AIXion/github-kanri/cmd/gkn@<tag>
 ```
-gkn [--json] <command>
 
-gkn clone <url> [--name repo]
-gkn quickstart <name> [--public|--private]
+Build from source:
 
-gkn repo list [--only glob] [--exclude glob]
-gkn repo status [--only glob] [--exclude glob]
-gkn repo open <pattern> [--pick n]
-gkn repo path <pattern> [--pick n]
-gkn repo recent [--limit n] [--only glob] [--exclude glob]
-gkn repo info <pattern> [--pick n]
-gkn repo graph <pattern> [--pick n] [--limit n]
-gkn repo clone <url> [--name repo]
-gkn repo exec --cmd "<command>" [--parallel n] [--timeout sec] [--require-clean] [--dry-run] [--only glob] [--exclude glob]
+```sh
+go build -o gkn ./cmd/gkn
+```
 
-gkn skills clone [--remote url] [--force]
-gkn skills sync [--target name] [--mode copy|mirror|link] [--force] [--dry-run] [--only glob] [--exclude glob]
-gkn skills link [--target name] [--force] [--dry-run] [--only glob] [--exclude glob]
-gkn skills watch [--target name] [--interval sec]
-gkn skills diff [--target name] [--only glob] [--exclude glob]
-gkn skills verify [--target name] [--only glob] [--exclude glob]
-gkn skills status [--target name] [--only glob] [--exclude glob]
-gkn skills pin --target name --ref <commit|tag> [--force]
-gkn skills clean [--target name] [--force] [--dry-run] [--only glob] [--exclude glob]
+## Core commands
 
-gkn config show
-gkn config init [--force]
-gkn config validate
+```text
+gkn repo <list|status|recent|info|graph|open|path|clone|exec>
+gkn skills <clone|sync|link|watch|diff|verify|status|pin|clean>
+gkn config <init|show|validate>
 gkn doctor
 gkn version
 ```
 
-補足:
+## Safety model
 
-- `gkn clone` は `gkn repo clone` の別名
-- `reposRoot` 既定: `~/Projects/repos`
-- `skills clone` は `skillsRemote` or `--remote`
+- Deny rules are always checked first
+- Ambiguous matches never execute; candidates only
+- Destructive actions require explicit `--force`
 
-## 使い方（目的→コマンド→結果）
+## Config
 
-### はじめに設定
+Single JSON config file:
 
-やりたいこと: 初期設定を作る  
-使う:
+- `~/.config/github-kanri/config.json`
 
-```
-gkn config init
-```
+## Requirements
 
-結果: `~/.config/github-kanri/config.json` 作成。既定 `reposRoot=~/Projects/repos`。
+- macOS
+- Git
 
-やりたいこと: 現在の設定を確認  
-使う:
+## Docs
 
-```
-gkn config show
-```
+- `README.ja.md`
+- `docs/requirements.md`
+- `CONTRIBUTING.md`
+- `SECURITY.md`
+- `SUPPORT.md`
 
-結果: 設定を表示。
+## License
 
-やりたいこと: 設定の不整合を検出  
-使う:
-
-```
-gkn config validate
-```
-
-結果: OK or エラー詳細。
-
-### リポを増やす
-
-やりたいこと: HTTP/SSH で clone して管理対象に入れる  
-使う:
-
-```
-gkn clone <url>
-gkn clone <url> --name repo
-```
-
-結果: `reposRoot` 配下に clone。既に存在なら失敗。
-
-やりたいこと: GitHub に新規リポを作り、skills を反映して即開始  
-使う:
-
-```
-gkn quickstart <name>
-gkn quickstart <name> --public
-```
-
-結果: GitHub にリポ作成。`reposRoot` 配下に初期化・skills 同期・main を push。
-
-### 管理対象の把握
-
-やりたいこと: 管理対象リポ一覧  
-使う:
-
-```
-gkn repo list
-gkn repo list --only "foo*"
-gkn repo list --exclude "tmp*"
-```
-
-結果: `name path` を出力。
-
-やりたいこと: 変更の有無だけ知りたい  
-使う:
-
-```
-gkn repo status
-```
-
-結果: `clean/dirty` を表示。
-
-やりたいこと: 最近更新された順で見たい  
-使う:
-
-```
-gkn repo recent --limit 20
-```
-
-結果: 最新コミット時刻順。
-
-### 特定リポに対する操作
-
-やりたいこと: そのリポを開く  
-使う:
-
-```
-gkn repo open <pattern> [--pick n]
-```
-
-結果: `code <path>` 実行。曖昧一致は候補のみ。
-
-やりたいこと: パスだけ欲しい  
-使う:
-
-```
-gkn repo path <pattern> [--pick n]
-```
-
-結果: パス文字列。
-
-やりたいこと: 主要情報を見たい  
-使う:
-
-```
-gkn repo info <pattern> [--pick n]
-```
-
-結果: origin/current/default/dirty を表示。
-
-やりたいこと: 簡易ログを見たい  
-使う:
-
-```
-gkn repo graph <pattern> [--pick n] [--limit n]
-```
-
-結果: oneline のログ。
-
-### 一括コマンド実行
-
-やりたいこと: すべてのリポで同じコマンド  
-使う:
-
-```
-gkn repo exec --cmd "git status -sb"
-gkn repo exec --cmd "go test ./..." --parallel 4
-gkn repo exec --cmd "make lint" --require-clean
-```
-
-結果: 各リポで実行。失敗/dirty は警告 or エラー。`--dry-run` で実行せず計画だけ。
-
-### skills を配布・同期
-
-やりたいこと: skills リポを取得/更新  
-使う:
-
-```
-gkn skills clone --remote <url>
-```
-
-結果: `skillsRoot` に clone。既に git repo なら pull。
-
-やりたいこと: 全リポへ skills をコピー/ミラー/リンク  
-使う:
-
-```
-gkn skills sync
-gkn skills sync --mode mirror
-gkn skills link
-```
-
-結果: `syncTargets` で定義した `src -> dest` を各リポへ反映。
-
-やりたいこと: 差分やズレを確認  
-使う:
-
-```
-gkn skills diff
-gkn skills status
-gkn skills verify
-```
-
-結果: 追加/削除/変更 or 一致/不一致を表示。`verify` は不一致で exit 2。
-
-やりたいこと: 特定 ref に固定  
-使う:
-
-```
-gkn skills pin --target skills --ref <commit|tag>
-```
-
-結果: `skillsRoot` を指定 ref に checkout。dirty の場合 `--force` 必須。
-
-やりたいこと: 余計なファイルを消す  
-使う:
-
-```
-gkn skills clean --force
-```
-
-結果: `src` にないファイルを `dest` から削除（`--dry-run` で確認）。
-
-### 監視
-
-やりたいこと: skills の変更を検知して自動同期  
-使う:
-
-```
-gkn skills watch --interval 5
-```
-
-結果: `skillsRoot` の状態変化で `sync` 実行。
-
-## 公式スキル（Codex）
-
-- `gkn-cli`: gkn CLI の全コマンド/フラグを網羅する参照スキル（英語）。配置: `.codex/skills/gkn-cli`
-
-取得方法: このリポジトリを clone し、`.codex/skills/gkn-cli` を手元の skills ルート（例: `~/.codex/skills` / `~/.claude/skills`）へコピー/同期。
-
-### 出力形式
-
-やりたいこと: 機械処理したい  
-使う:
-
-```
-gkn --json repo list
-```
-
-結果: JSON 出力。
-
-## 設定
-
-パス:
-
-```
-~/.config/github-kanri/config.json
-```
-
-例:
-
-```json
-{
-  "projectsRoot": "~/Projects",
-  "reposRoot": "~/Projects/repos",
-  "skillsRoot": "~/Projects/skills",
-  "skillTargets": [".codex/skills", ".claude/skills"],
-  "syncTargets": [
-    {
-      "name": "skills",
-      "src": "~/Projects/skills",
-      "dest": [".codex/skills", ".claude/skills"],
-      "include": ["**/*"],
-      "exclude": [".git/**"]
-    }
-  ],
-  "allowCommands": [
-    "git status*",
-    "git log*",
-    "git rev-parse*",
-    "git config*",
-    "git remote*",
-    "git clone*",
-    "git fetch*",
-    "git pull*",
-    "git checkout*",
-    "code *"
-  ],
-  "denyCommands": ["rm -rf*", "git reset --hard*"],
-  "syncMode": "copy",
-  "conflictPolicy": "fail"
-}
-```
-
-ポイント:
-
-- `denyCommands` 最優先
-- `allowCommands` ワイルドカード対応
-- `~` は展開
-
-## 出力
-
-- デフォルト: 人間向け
-- `--json`: JSON
-
-## 品質チェック
-
-```
-scripts/quality.sh
-```
-
-## ライセンス
-
-MIT
+MIT. See `LICENSE`.
