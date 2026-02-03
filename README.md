@@ -312,6 +312,12 @@ gkn skills watch --interval 5
 
 結果: `skillsRoot` の状態変化で `sync` 実行。
 
+## 公式スキル（Codex）
+
+- `gkn-cli`: gkn CLI の全コマンド/フラグを網羅する参照スキル（英語）。配置: `.codex/skills/gkn-cli`
+
+取得方法: このリポジトリを clone し、`.codex/skills/gkn-cli` を手元の skills ルート（例: `~/.codex/skills` / `~/.claude/skills`）へコピー/同期。
+
 ### 出力形式
 
 やりたいこと: 機械処理したい  

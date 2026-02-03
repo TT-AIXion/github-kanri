@@ -33,3 +33,9 @@ go.work.sum
 
 # Agent local metadata
 .codex/
+!.codex/
+.codex/*
+!.codex/skills/
+.codex/skills/*
+!.codex/skills/gkn-cli/
+!.codex/skills/gkn-cli/**
