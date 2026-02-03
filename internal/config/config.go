@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -104,10 +105,45 @@ func Load(path string) (Config, error) {
 	}
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
-		return Config{}, err
+		return Config{}, formatJSONError(path, data, err)
 	}
 	cfg = ApplyDefaults(cfg)
 	return cfg, nil
+}
+
+func formatJSONError(path string, data []byte, err error) error {
+	var syntaxErr *json.SyntaxError
+	var typeErr *json.UnmarshalTypeError
+	switch {
+	case errors.As(err, &syntaxErr):
+		line, col := lineColumn(data, syntaxErr.Offset)
+		return fmt.Errorf("invalid JSON in %s:%d:%d: %w", path, line, col, err)
+	case errors.As(err, &typeErr):
+		line, col := lineColumn(data, typeErr.Offset)
+		return fmt.Errorf("invalid JSON in %s:%d:%d: %w", path, line, col, err)
+	default:
+		return fmt.Errorf("invalid JSON in %s: %w", path, err)
+	}
+}
+
+func lineColumn(data []byte, offset int64) (int, int) {
+	if offset < 1 {
+		return 1, 1
+	}
+	line := 1
+	col := 1
+	for i, b := range data {
+		if int64(i) >= offset-1 {
+			break
+		}
+		if b == '\n' {
+			line++
+			col = 1
+			continue
+		}
+		col++
+	}
+	return line, col
 }
 
 func Save(path string, cfg Config) error {

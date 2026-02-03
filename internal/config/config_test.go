@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -283,6 +284,8 @@ func TestLoadInvalidJSON(t *testing.T) {
 	}
 	if _, err := Load(path); err == nil {
 		t.Fatalf("expected unmarshal error")
+	} else if !strings.Contains(err.Error(), fmt.Sprintf("%s:1:2", path)) {
+		t.Fatalf("expected path/line/col in error: %v", err)
 	}
 }
 
