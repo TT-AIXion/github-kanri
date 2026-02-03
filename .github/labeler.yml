@@ -1,0 +1,27 @@
+# PR labeler (actions/labeler)
+# https://github.com/actions/labeler
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'
+          - 'README*'
+          - 'CODE_OF_CONDUCT.md'
+          - 'CONTRIBUTING.md'
+          - 'SECURITY.md'
+          - 'SUPPORT.md'
+
+bug:
+  - head-branch:
+      - '^fix'
+      - '^bug'
+      - 'fix/'
+      - 'bug/'
+
+enhancement:
+  - head-branch:
+      - '^feat'
+      - '^feature'
+      - 'feat/'
+      - 'feature/'

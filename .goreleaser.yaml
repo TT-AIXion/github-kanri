@@ -31,6 +31,22 @@ archives:
 checksum:
   name_template: "checksums.txt"
 
+sboms:
+  - id: default
+    artifacts: archive
+    disable: false
+
+signs:
+  - id: cosign
+    cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    artifacts: checksum
+    args:
+      - sign-blob
+      - --bundle=${signature}
+      - ${artifact}
+      - --yes
+
 release:
   prerelease: auto
 

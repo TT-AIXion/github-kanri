@@ -62,19 +62,29 @@ gkn version
 Single JSON config file:
 
 - `~/.config/github-kanri/config.json`
+- Example: `config.example.json`
+- Schema: `docs/config.schema.json`
 
 ## Requirements
 
-- macOS
+- macOS (primary)
+- Linux binaries are provided on a best-effort basis
 - Git
 
 ## Docs
 
 - `README.ja.md`
 - `docs/requirements.md`
+- `docs/usage.md`
+- `docs/config.md`
+- `docs/config.schema.json`
+- `docs/RELEASING.md`
+- `docs/gkn.1`
 - `CONTRIBUTING.md`
 - `SECURITY.md`
 - `SUPPORT.md`
+- `config.example.json`
+- `completions/`
 
 ## License
 

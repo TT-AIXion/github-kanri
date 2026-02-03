@@ -36,15 +36,25 @@ gkn version
 ## 設定
 
 - `~/.config/github-kanri/config.json`
+- 例: `config.example.json`
+- スキーマ: `docs/config.schema.json`
 
 ## 動作環境
 
-- macOS
+- macOS（主）
+- Linux バイナリはベストエフォート
 - Git
 
 ## ドキュメント
 
 - `docs/requirements.md`
+- `docs/usage.md`
+- `docs/config.md`
+- `docs/config.schema.json`
+- `docs/RELEASING.md`
+- `docs/gkn.1`
 - `CONTRIBUTING.md`
 - `SECURITY.md`
 - `SUPPORT.md`
+- `config.example.json`
+- `completions/`

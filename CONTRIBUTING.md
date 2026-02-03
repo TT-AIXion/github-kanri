@@ -8,12 +8,17 @@ Requirements:
 
 - Go 1.22+
 - Git
-- macOS
+- macOS (primary)
+- Linux (best-effort)
 
-Run tests:
+Run checks:
 
 ```sh
+gofmt -w .
+go vet ./...
 go test ./...
+golangci-lint run
+govulncheck ./...
 ```
 
 ## Style

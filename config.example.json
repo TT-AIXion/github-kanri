@@ -1,0 +1,52 @@
+{
+  "projectsRoot": "~/Projects",
+  "reposRoot": "~/Projects/repos",
+  "skillsRoot": "~/Projects/skills",
+  "skillsRemote": "",
+  "skillTargets": [
+    ".codex/skills",
+    ".claude/skills"
+  ],
+  "syncTargets": [
+    {
+      "name": "skills",
+      "src": "~/Projects/skills",
+      "dest": [
+        ".codex/skills",
+        ".claude/skills"
+      ],
+      "include": [
+        "**/*"
+      ],
+      "exclude": [
+        ".git/**"
+      ]
+    }
+  ],
+  "allowCommands": [
+    "gh auth status*",
+    "gh repo create*",
+    "git init*",
+    "git add*",
+    "git commit*",
+    "git status*",
+    "git log*",
+    "git rev-parse*",
+    "git config*",
+    "git remote*",
+    "git clone*",
+    "git fetch*",
+    "git pull*",
+    "git checkout*",
+    "git push*",
+    "code *"
+  ],
+  "denyCommands": [
+    "rm -rf*",
+    "git reset --hard*"
+  ],
+  "allowPaths": [],
+  "denyPaths": [],
+  "syncMode": "copy",
+  "conflictPolicy": "fail"
+}

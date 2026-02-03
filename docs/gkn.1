@@ -1,0 +1,62 @@
+.TH GKN 1 "2026-02-03" "gkn" "User Commands"
+.SH NAME
+gkn \- safety-first local GitHub repo management CLI
+.SH SYNOPSIS
+.B gkn
+.RI [ --json ]
+.RI <command>
+.RI [ args... ]
+.SH DESCRIPTION
+.B gkn
+runs local-only, non-interactive GitHub repo management commands with a deny-first safety guard.
+.SH COMMANDS
+.TP
+.B repo
+Repo operations.
+.TP
+.B skills
+Skills sync operations.
+.TP
+.B config
+Config operations.
+.TP
+.B doctor
+Environment checks.
+.TP
+.B version
+Show version.
+.TP
+.B clone
+Clone a repo (shortcut).
+.TP
+.B quickstart
+Create a new repo (shortcut).
+.SH COMMON FLAGS
+.TP
+.B --json
+Machine-readable output.
+.TP
+.B --only
+Repeatable glob filter (repo/skills commands).
+.TP
+.B --exclude
+Repeatable glob filter (repo/skills commands).
+.TP
+.B --dry-run
+Do not write changes.
+.TP
+.B --force
+Allow destructive actions.
+.SH FILES
+.TP
+.I ~/.config/github-kanri/config.json
+Config file.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Error.
+.SH SEE ALSO
+README.md, docs/usage.md, docs/config.md

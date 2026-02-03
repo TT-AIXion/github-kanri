@@ -1,0 +1,19 @@
+# Issue labeler (github/issue-labeler)
+# https://github.com/github/issue-labeler
+
+documentation:
+  - 'docs?'
+  - 'documentation'
+  - 'readme'
+
+question:
+  - 'question'
+  - 'help'
+  - 'how to'
+  - 'support'
+
+bug:
+  - '^bug:'
+
+enhancement:
+  - '^feat:'

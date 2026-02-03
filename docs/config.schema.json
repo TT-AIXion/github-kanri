@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TT-AIXion/github-kanri/blob/main/docs/config.schema.json",
+  "title": "github-kanri config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "projectsRoot": {
+      "type": "string",
+      "default": "~/Projects"
+    },
+    "reposRoot": {
+      "type": "string",
+      "default": "~/Projects/repos"
+    },
+    "skillsRoot": {
+      "type": "string",
+      "default": "~/Projects/skills"
+    },
+    "skillsRemote": {
+      "type": "string",
+      "default": ""
+    },
+    "skillTargets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        ".codex/skills",
+        ".claude/skills"
+      ]
+    },
+    "syncTargets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "src": { "type": "string" },
+          "dest": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "include": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "exclude": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["name", "src", "dest"]
+      }
+    },
+    "allowCommands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "denyCommands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allowPaths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "denyPaths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "syncMode": {
+      "type": "string",
+      "enum": ["copy", "mirror", "link"],
+      "default": "copy"
+    },
+    "conflictPolicy": {
+      "type": "string",
+      "enum": ["fail", "overwrite"],
+      "default": "fail"
+    }
+  },
+  "required": [
+    "projectsRoot",
+    "reposRoot",
+    "skillsRoot",
+    "syncTargets",
+    "syncMode",
+    "conflictPolicy"
+  ]
+}
