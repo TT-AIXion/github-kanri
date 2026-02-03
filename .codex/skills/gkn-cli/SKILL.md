@@ -6,9 +6,11 @@ description: Complete command reference and usage guidance for the gkn (github-k
 # gkn CLI
 
 ## Overview
+
 Use this skill to map user goals to exact gkn commands and flags, including global `--json`, repo selection patterns, and skills sync workflows.
 
 ## Global Behavior
+
 - Use `gkn help`, `gkn -h`, or `gkn --help` to show top-level usage.
 - Use `gkn <group> --help` or `gkn <group> <command> --help` for details.
 - Use global `--json` to emit machine-readable output for supported commands.
@@ -50,6 +52,7 @@ gkn version
 ```
 
 ## Command Notes
+
 - `clone` is an alias for `repo clone` and clones into `reposRoot`.
 - `repo list` outputs `name path` for each repo; `repo status` reports `clean/dirty`.
 - `repo recent` sorts by last commit time; repos with no commits are flagged.

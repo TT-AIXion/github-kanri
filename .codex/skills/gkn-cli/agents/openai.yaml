@@ -1,4 +1,0 @@
-interface:
-  display_name: "gkn CLI"
-  short_description: "Guide for all gkn commands and flags"
-  default_prompt: "Use $gkn-cli to map tasks to the correct gkn commands with flags."
