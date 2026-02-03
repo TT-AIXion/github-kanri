@@ -71,6 +71,11 @@ func DefaultConfig() (Config, error) {
 			},
 		},
 		AllowCommands: []string{
+			"gh auth status*",
+			"gh repo create*",
+			"git init*",
+			"git add*",
+			"git commit*",
 			"git status*",
 			"git log*",
 			"git rev-parse*",
@@ -80,6 +85,7 @@ func DefaultConfig() (Config, error) {
 			"git fetch*",
 			"git pull*",
 			"git checkout*",
+			"git push*",
 			"code *",
 		},
 		DenyCommands: []string{

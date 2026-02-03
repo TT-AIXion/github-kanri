@@ -37,6 +37,8 @@ func (a App) Run(ctx context.Context, args []string) int {
 		return a.runRepo(ctx, args[1:])
 	case "clone":
 		return a.runRepoClone(ctx, args[1:])
+	case "quickstart":
+		return a.runQuickstart(ctx, args[1:])
 	case "skills":
 		return a.runSkills(ctx, args[1:])
 	case "config":
@@ -57,6 +59,7 @@ func (a App) printUsage() {
 
 Commands:
   clone <url> [--name repo]
+  quickstart <name> [--public|--private]
   repo      repo operations
   skills    skills sync operations
   config    config operations

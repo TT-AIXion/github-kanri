@@ -8,6 +8,7 @@ GitHub リポ管理 CLI。
 - リポ一覧・状態・最近更新を一括で把握
 - 名前あいまい一致でパス/情報/履歴を取得
 - リポの open/clone/exec を安全に実行
+- GitHub リポ作成 + skills 反映を一括で実行
 - スキルの clone/sync/diff/verify をまとめて運用
 - 設定の init/show/validate と doctor で整備
 
@@ -59,6 +60,7 @@ go build -o gkn ./cmd/gkn
 ```
 gkn config init
 gkn config show
+gkn quickstart my-repo
 gkn clone https://github.com/OWNER/REPO.git
 gkn repo list
 gkn repo status
@@ -72,6 +74,7 @@ gkn <command> [args]
 ```
 
 - `clone` リポ clone（reposRoot 配下）
+- `quickstart` GitHub リポ作成 + skills 反映
 - `repo` リポ操作
 - `skills` スキル同期
 - `config` 設定
@@ -91,6 +94,7 @@ gkn <command> --help
 gkn [--json] <command>
 
 gkn clone <url> [--name repo]
+gkn quickstart <name> [--public|--private]
 
 gkn repo list [--only glob] [--exclude glob]
 gkn repo status [--only glob] [--exclude glob]
@@ -167,6 +171,16 @@ gkn clone <url> --name repo
 ```
 
 結果: `reposRoot` 配下に clone。既に存在なら失敗。
+
+やりたいこと: GitHub に新規リポを作り、skills を反映して即開始  
+使う:
+
+```
+gkn quickstart <name>
+gkn quickstart <name> --public
+```
+
+結果: GitHub にリポ作成。`reposRoot` 配下に初期化・skills 同期・main を push。
 
 ### 管理対象の把握
 

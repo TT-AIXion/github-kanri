@@ -31,6 +31,9 @@ func TestAppRunBasic(t *testing.T) {
 	if code := app.Run(context.Background(), []string{"doctor"}); code != 0 {
 		t.Fatalf("expected doctor")
 	}
+	if code := app.Run(context.Background(), []string{"quickstart"}); code == 0 {
+		t.Fatalf("expected quickstart error")
+	}
 	if code := app.Run(context.Background(), []string{"unknown"}); code == 0 {
 		t.Fatalf("expected error")
 	}

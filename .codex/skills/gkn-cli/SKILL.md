@@ -14,6 +14,7 @@ Use this skill to map user goals to exact gkn commands and flags, including glob
 - Initialize config: `gkn config init` (use `--force` to overwrite).
 - Show config: `gkn config show`.
 - Validate config: `gkn config validate`.
+- Quickstart repo + skills: `gkn quickstart <name> [--public|--private]`.
 - Clone repo into `reposRoot`: `gkn clone <url>` or `gkn repo clone <url>`.
 - List repos: `gkn repo list`.
 - Check dirty/clean: `gkn repo status`.
@@ -50,6 +51,7 @@ Use this skill to map user goals to exact gkn commands and flags, including glob
 gkn [--json] <command>
 
 gkn clone <url> [--name repo]
+gkn quickstart <name> [--public|--private]
 
 gkn repo list [--only glob] [--exclude glob]
 gkn repo status [--only glob] [--exclude glob]
@@ -108,4 +110,5 @@ gkn repo exec --cmd "git status -sb" --parallel 4
 gkn skills sync --mode mirror --dry-run
 gkn skills verify --target skills
 gkn skills clean --force --dry-run
+gkn quickstart my-repo
 ```
