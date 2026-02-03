@@ -8,6 +8,11 @@ Please report security issues by email:
 
 Do not open public GitHub issues for security reports.
 
+## Response Targets
+
+- Acknowledge within 7 days
+- Provide an initial assessment within 14 days
+
 ## Supported Versions
 
 Security fixes are provided for:

@@ -27,6 +27,11 @@ archives:
     files:
       - LICENSE
       - README.md
+      - CHANGELOG.md
+      - config.example.json
+      - docs/gkn.1
+      - completions/gkn.bash
+      - completions/gkn.zsh
 
 checksum:
   name_template: "checksums.txt"
@@ -68,6 +73,9 @@ brews:
     directory: Formula
     install: |
       bin.install "gkn"
+      man1.install "docs/gkn.1"
+      bash_completion.install "completions/gkn.bash" => "gkn"
+      zsh_completion.install "completions/gkn.zsh" => "_gkn"
     test: |
       system "#{bin}/gkn", "version"
     repository:

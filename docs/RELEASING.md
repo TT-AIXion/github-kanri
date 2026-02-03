@@ -22,7 +22,7 @@ git push origin vX.Y.Z
 ```
 
 4. `release` workflow runs GoReleaser and publishes artifacts.
-5. Verify release assets, checksums, SBOMs, and signatures.
+5. Verify release assets, checksums, SBOMs, and signatures (cosign bundle).
 
 ## Snapshot tags
 
