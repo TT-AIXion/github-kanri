@@ -42,6 +42,15 @@ func TestRepoCommands(t *testing.T) {
 	if code := app.runRepo(context.Background(), []string{"path", "alpha"}); code != 0 {
 		t.Fatalf("path failed")
 	}
+	if code := app.runRepo(context.Background(), []string{"cd", "alpha"}); code != 0 {
+		t.Fatalf("cd failed")
+	}
+	if code := app.runRepo(context.Background(), []string{"cd", "a"}); code == 0 {
+		t.Fatalf("expected cd multi match")
+	}
+	if code := app.Run(context.Background(), []string{"cd", "alpha"}); code != 0 {
+		t.Fatalf("cd alias failed")
+	}
 	appJSON := app
 	appJSON.Out.JSON = true
 	if code := appJSON.runRepo(context.Background(), []string{"path", "a"}); code == 0 {

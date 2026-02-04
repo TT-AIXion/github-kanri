@@ -12,8 +12,12 @@ import (
 
 func TestDoctor(t *testing.T) {
 	app, cfg := newTestApp(t)
-	os.RemoveAll(cfg.ReposRoot)
-	os.RemoveAll(cfg.SkillsRoot)
+	if err := os.RemoveAll(cfg.ReposRoot); err != nil {
+		t.Fatalf("cleanup repos: %v", err)
+	}
+	if err := os.RemoveAll(cfg.SkillsRoot); err != nil {
+		t.Fatalf("cleanup skills: %v", err)
+	}
 	if code := app.runDoctor(context.Background(), nil); code != 0 {
 		t.Fatalf("doctor failed")
 	}

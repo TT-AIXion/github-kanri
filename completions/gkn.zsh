@@ -3,6 +3,8 @@
 local -a commands
 commands=(
   'help:show help'
+  'cd:print repo path for cd'
+  'shell:shell integration'
   'repo:repo operations'
   'skills:skills sync operations'
   'config:config operations'
@@ -23,6 +25,7 @@ case "$words[2]" in
     repo_cmds=(
       'list:list repos'
       'status:repo status'
+      'cd:print repo path for cd'
       'open:open repo'
       'path:repo path'
       'recent:recent repos'
@@ -32,6 +35,17 @@ case "$words[2]" in
       'exec:exec command'
     )
     _describe -t commands command repo_cmds
+    ;;
+  shell)
+    local -a shell_cmds
+    shell_cmds=(
+      'install:install shell function'
+      'zsh:print zsh function'
+      'bash:print bash function'
+      'fish:print fish function'
+      'powershell:print powershell function'
+    )
+    _describe -t commands command shell_cmds
     ;;
   skills)
     local -a skills_cmds

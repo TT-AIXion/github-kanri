@@ -14,6 +14,7 @@ func (a App) runRepo(ctx context.Context, args []string) int {
 Commands:
   list
   status
+  cd <pattern> [--pick n]
   open <pattern> [--pick n]
   path <pattern> [--pick n]
   recent [--limit n]
@@ -34,6 +35,8 @@ Common flags:
 		return a.runRepoList(ctx, args[1:])
 	case "status":
 		return a.runRepoStatus(ctx, args[1:])
+	case "cd":
+		return a.runRepoCd(ctx, args[1:])
 	case "open":
 		return a.runRepoOpen(ctx, args[1:])
 	case "path":

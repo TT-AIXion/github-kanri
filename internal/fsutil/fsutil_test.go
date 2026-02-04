@@ -135,7 +135,8 @@ func TestDiffAndClean(t *testing.T) {
 	_ = os.MkdirAll(dst, 0o755)
 	_ = os.WriteFile(filepath.Join(src, "a.txt"), []byte("a"), 0o644)
 	_ = os.WriteFile(filepath.Join(dst, "b.txt"), []byte("b"), 0o644)
-	added, removed, changed, err := DiffDir(src, dst, []string{"**/*"}, nil)
+	var changed []string
+	added, removed, _, err := DiffDir(src, dst, []string{"**/*"}, nil)
 	if err != nil {
 		t.Fatalf("diff: %v", err)
 	}

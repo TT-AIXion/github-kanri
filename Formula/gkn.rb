@@ -12,6 +12,9 @@ class Gkn < Formula
   def install
     ldflags = "-s -w -X github.com/TT-AIXion/github-kanri/cmd/gkn.Version=#{version}"
     system "go", "build", *std_go_args(ldflags: ldflags), "./cmd/gkn"
+    man1.install "docs/gkn.1"
+    bash_completion.install "completions/gkn.bash" => "gkn"
+    zsh_completion.install "completions/gkn.zsh" => "_gkn"
   end
 
   test do

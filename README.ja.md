@@ -21,17 +21,25 @@ gkn config show
 gkn repo list
 gkn repo status
 gkn repo recent --limit 10
+gkn shell install --shell zsh
 ```
 
 ## 主要コマンド
 
 ```text
-gkn repo <list|status|recent|info|graph|open|path|clone|exec>
+gkn cd <pattern> [--pick n]
+gkn repo <list|status|recent|info|graph|open|path|cd|clone|exec>
+gkn shell <shell>
+gkn shell install --shell <shell> [--profile path] [--force] [--dry-run]
 gkn skills <clone|sync|link|watch|diff|verify|status|pin|clean>
 gkn config <init|show|validate>
 gkn doctor
 gkn version
 ```
+
+## シェル連携
+
+`gkn shell install --shell zsh` を実行すると `gkn cd <pattern>` で移動できる。
 
 ## 設定
 
