@@ -22,6 +22,9 @@ func TestAppRunBasic(t *testing.T) {
 	if code := app.Run(context.Background(), []string{"repo", "list"}); code != 0 {
 		t.Fatalf("expected repo list")
 	}
+	if code := app.Run(context.Background(), []string{"shell", "zsh"}); code != 0 {
+		t.Fatalf("expected shell")
+	}
 	if code := app.Run(context.Background(), []string{"skills", "status"}); code != 0 {
 		t.Fatalf("expected skills status")
 	}

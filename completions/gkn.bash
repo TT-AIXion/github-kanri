@@ -4,13 +4,17 @@ _gkn_complete() {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
   if [[ ${COMP_CWORD} -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "help repo skills config doctor version clone quickstart" -- "$cur") )
+    COMPREPLY=( $(compgen -W "help cd shell repo skills config doctor version clone quickstart" -- "$cur") )
     return 0
   fi
 
   case "$prev" in
+    shell)
+      COMPREPLY=( $(compgen -W "install zsh bash fish powershell" -- "$cur") )
+      return 0
+      ;;
     repo)
-      COMPREPLY=( $(compgen -W "list status open path recent info graph clone exec" -- "$cur") )
+      COMPREPLY=( $(compgen -W "list status cd open path recent info graph clone exec" -- "$cur") )
       return 0
       ;;
     skills)

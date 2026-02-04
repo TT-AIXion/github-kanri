@@ -33,6 +33,10 @@ func (a App) Run(ctx context.Context, args []string) int {
 	case "help", "-h", "--help":
 		a.printUsage()
 		return 0
+	case "cd":
+		return a.runRepoCd(ctx, args[1:])
+	case "shell":
+		return a.runShell(ctx, args[1:])
 	case "repo":
 		return a.runRepo(ctx, args[1:])
 	case "clone":
@@ -58,6 +62,8 @@ func (a App) printUsage() {
 	a.Out.Raw(`gkn <command>
 
 Commands:
+  cd <pattern> [--pick n]
+  shell    shell integration
   clone <url> [--name repo]
   quickstart <name> [--public|--private]
   repo      repo operations

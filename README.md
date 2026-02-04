@@ -19,6 +19,7 @@ gkn config show
 gkn repo list
 gkn repo status
 gkn repo recent --limit 10
+gkn shell install --shell zsh
 ```
 
 ## Install
@@ -44,7 +45,10 @@ go build -o gkn ./cmd/gkn
 ## Core commands
 
 ```text
-gkn repo <list|status|recent|info|graph|open|path|clone|exec>
+gkn cd <pattern> [--pick n]
+gkn repo <list|status|recent|info|graph|open|path|cd|clone|exec>
+gkn shell <shell>
+gkn shell install --shell <shell> [--profile path] [--force] [--dry-run]
 gkn skills <clone|sync|link|watch|diff|verify|status|pin|clean>
 gkn config <init|show|validate>
 gkn doctor
@@ -56,6 +60,10 @@ gkn version
 - Deny rules are always checked first
 - Ambiguous matches never execute; candidates only
 - Destructive actions require explicit `--force`
+
+## Shell integration
+
+`gkn shell install --shell zsh` installs a wrapper so `gkn cd <pattern>` changes directories.
 
 ## Config
 

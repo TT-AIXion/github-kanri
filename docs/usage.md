@@ -8,12 +8,16 @@ gkn config show
 gkn repo list
 gkn repo status
 gkn repo recent --limit 10
+gkn shell install --shell zsh
 ```
 
 ## Commands
 
 ```text
-gkn repo <list|status|recent|info|graph|open|path|clone|exec>
+gkn cd <pattern> [--pick n]
+gkn repo <list|status|recent|info|graph|open|path|cd|clone|exec>
+gkn shell <shell>
+gkn shell install --shell <shell> [--profile path] [--force] [--dry-run]
 gkn skills <clone|sync|link|watch|diff|verify|status|pin|clean>
 gkn config <init|show|validate>
 gkn doctor
@@ -35,11 +39,18 @@ gkn repo list
 gkn repo status --only "**/github-kanri"
 gkn repo exec --cmd "git status" --parallel 4
 
+gkn shell install --shell zsh
+gkn cd github-kanri
+
 gkn skills sync
 gkn skills diff --only "**/skills"
 
 gkn config validate
 ```
+
+## Shell integration
+
+`gkn shell install --shell zsh` adds a wrapper so `gkn cd <pattern>` changes directories.
 
 ## Output
 
