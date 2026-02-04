@@ -156,7 +156,9 @@ func CopyFile(src, dst string, dryRun bool) error {
 	if err != nil {
 		return err
 	}
-	defer srcFile.Close()
+	defer func() {
+		_ = srcFile.Close()
+	}()
 	info, err := fileStat(srcFile)
 	if err != nil {
 		return err
@@ -165,7 +167,9 @@ func CopyFile(src, dst string, dryRun bool) error {
 	if err != nil {
 		return err
 	}
-	defer dstFile.Close()
+	defer func() {
+		_ = dstFile.Close()
+	}()
 	if _, err := ioCopy(dstFile, srcFile); err != nil {
 		return err
 	}
@@ -194,7 +198,9 @@ func FileHash(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	h := sha256.New()
 	if _, err := ioCopy(h, file); err != nil {
 		return "", err
